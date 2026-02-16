@@ -9,9 +9,15 @@ import java.util.List;
 public class InstructorService {
 
     private List<Instructor> instructors = new ArrayList<>();
-    private int nextID = 1;
+    private static int nextID = 1;
 
     public void addInstructor(String firstName, String lastName, String phoneNumber, String email){
+        for (Instructor ins : instructors) {
+            if (ins.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("Error: A Instructor with email " + email + " already exists.");
+                return;
+            }
+        }
         Instructor instructor = new Instructor(
                 nextID++,
                 firstName,
@@ -45,13 +51,13 @@ public class InstructorService {
         }
         else {
             System.out.println("----------------------------------------------------------------------------");
-            System.out.printf("%-10s | %-20s | %-20s | %-30s\n", "ID" , "First Name", "Second Name", "Email");
+            System.out.printf("%-10s | %-30s | %-20s | %-30s\n", "ID" , "Name", "Phone Number", "Email");
             System.out.println("----------------------------------------------------------------------------");
             for (Instructor instructor : instructors) {
-                System.out.printf("%-10s | %-20s | %-20s | %-30s\n",
+                System.out.printf("%-10s | %-30s | %-20s | %-30s\n",
                         instructor.getInstructorID(),
-                        instructor.getFirstName(),
-                        instructor.getLastName(),
+                        instructor.getFirstName() + " " + instructor.getLastName(),
+                        instructor.getPhoneNumber(),
                         instructor.getEmail());
             }
             System.out.println();

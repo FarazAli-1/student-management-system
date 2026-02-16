@@ -76,16 +76,17 @@ public class Enrolment {
     private Course course;
     private Student student;
 
-//    @Override
-//    public String toString() {
-//        return "Instructor {" +
-//                "Instructor ID = " + instructorID +
-//                ", First Name = '" + firstName + '\'' +
-//                ", Last Name = '" + lastName + '\'' +
-//                ", Phone Number = '" + phoneNumber + '\'' +
-//                ", Email = '" + email + '\'' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Enrolment {" +
+                "ID = " + getStudent().getStudentID() +
+                ", First Name = '" + getStudent().getFirstName() + " " + getStudent().getLastName() + '\'' +
+                ", Enrolment Start Date = '" + enrolmentStartDate + '\'' +
+                ", Grade = '" + grade + '\'' +
+                ", Course Name = '" + getCourse().getCourseName() + '\'' +
+                ", Course Code = '" + getCourse().getCourseCode() + '\'' +
+                '}';
+    }
 
 }
 

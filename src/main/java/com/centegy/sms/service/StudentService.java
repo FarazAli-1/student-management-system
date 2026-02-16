@@ -9,9 +9,16 @@ public class StudentService {
 
     private List<Student> students = new ArrayList<>();
 
-    private int nextID = 1;
+    private static int nextID = 1;
 
     public void addStudent(String firstName, String lastName, String phoneNumber, String email){
+
+        for (Student s : students) {
+            if (s.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("Error: A student with email " + email + " already exists.");
+                return;
+            }
+        }
         Student student = new Student(
                 nextID++,
                 firstName,
@@ -35,9 +42,58 @@ public class StudentService {
         return null;
     }
 
+
+    public List<Student> searchByName(String name){
+        List<Student> results = new ArrayList<>();
+        for (Student s : students){
+            if (s.getFirstName().equalsIgnoreCase(name) || s.getLastName().equalsIgnoreCase(name)){
+                results.add(s);
+            }
+        }
+        return results;
+    }
+
     public boolean removeStudent (int studentID){
         return students.removeIf(s -> s.getStudentID() == studentID);
     }
+
+    public Student updateStudent(int studentID, int choice,String newValue){
+        for (Student s : students) {
+            if (s.getStudentID() == studentID) {
+                switch (choice) {
+                    case 1: {
+                        s.setFirstName(newValue);
+                        break;
+                    }
+                    case 2: {
+                        s.setLastName(newValue);
+                        break;
+                    }
+                    case 3: {
+                        s.setPhoneNumber(newValue);
+                        break;
+                    }
+                    case 4: {
+                        s.setEmail(newValue);
+                        break;
+                    }
+                    case 0: {
+                        System.out.println("Thank You!");
+                        break;
+                    }
+                    default:
+                        System.out.println("Invalid Choice");
+                }
+                System.out.println("Update Successful");
+                return s;
+            }
+
+        }
+        System.out.println("Student with ID doesn't exist");
+        return null;
+    }
+
+
 
     public void showStudents (){
 
@@ -45,18 +101,32 @@ public class StudentService {
             System.out.println("No record available");
         }
         else {
+
+            List<Student> sortedList = new ArrayList<>(students);
+
+            sortedList.sort((s1,s2) -> {
+                int res = s1.getFirstName().compareToIgnoreCase(s2.getFirstName());
+                if (res != 0) {
+                    return res;
+                }
+                return s1.getLastName().compareToIgnoreCase(s2.getLastName());
+            });
+
             System.out.println("-----------------------------------------------------------------------------------");
-            System.out.printf("%-5s | %-15s | %-15s | %-30s\n", "ID" , "First Name", "Second Name", "Email");
+            System.out.printf("%-5s | %-30s | %-15s | %-30s\n", "ID" , "Name", "Phone Number" ,"Email");
             System.out.println("-----------------------------------------------------------------------------------");
-            for (Student student : students) {
-                System.out.printf("%-5s | %-15s | %-15s | %-30s\n",
+            for (Student student : sortedList) {
+                System.out.printf("%-5s | %-30s | %-15s | %-30s\n",
                         student.getStudentID(),
-                        student.getFirstName(),
-                        student.getLastName(),
+                        student.getFirstName() + " " + student.getLastName(),
+                        student.getPhoneNumber(),
                         student.getEmail());
             }
             System.out.println("-----------------------------------------------------------------------------------");
             System.out.println();
         }
     }
+
+
+
 }

@@ -4,12 +4,13 @@ package com.centegy.sms.model;
 
 public class Course {
 
-    public Course(int courseID, String courseName, String courseCode, String credits, Instructor instructorID) {
+    public Course(int courseID, String courseName, String courseCode, String credits, Instructor instructor, int maxCapacity) {
         this.courseID = courseID;
         this.courseName = courseName;
         this.courseCode = courseCode;
         this.credits = credits;
-        this.instructorID = instructorID;
+        this.instructorID = instructor;
+        this.maxCapacity = maxCapacity;
     }
 
     public String getCourseName() {
@@ -22,10 +23,6 @@ public class Course {
 
     public int getCourseID() {
         return courseID;
-    }
-
-    public void setCourseID(int courseID) {
-        this.courseID = courseID;
     }
 
     public String getCredits() {
@@ -52,11 +49,20 @@ public class Course {
         this.courseCode = courseCode;
     }
 
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
     private int courseID;
     private String courseName;
     private String courseCode;
     private String credits;
     private Instructor instructorID;
+    private int maxCapacity = 80;
 
 
     @Override
@@ -70,7 +76,8 @@ public class Course {
                 ", Course Code = '" + courseCode + '\'' +
                 ", Credits = '" + credits + '\'' +
                 ", Instructor = '" + instructorName + '\'' +
-                '}';
+                ", Capacity = '" + maxCapacity + '\'' +
+        '}';
     }
 
 }

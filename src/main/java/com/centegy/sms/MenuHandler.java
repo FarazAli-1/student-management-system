@@ -20,7 +20,7 @@ public class MenuHandler {
 
 
     static void mainMenu(){
-        System.out.println("--------------STUDENT MANAGEMENT SYSTEM--------------");
+        System.out.println("\n--------------STUDENT MANAGEMENT SYSTEM--------------");
         System.out.println("1 - Student Management Menu");
         System.out.println("2 - Course Management Menu");
         System.out.println("3 - Instructor Management Menu");
@@ -33,9 +33,9 @@ public class MenuHandler {
         boolean cond = true;
 
         while (cond){
-
+            clearConsole();
             System.out.println();
-            System.out.println("--------------STUDENT MANAGEMENT MENU--------------");
+            System.out.println("\n--------------STUDENT MANAGEMENT MENU--------------");
             System.out.println("1 - Add a Student");
             System.out.println("2 - Remove a Student");
             System.out.println("3 - Update a Student's Information");
@@ -45,7 +45,7 @@ public class MenuHandler {
             System.out.println("0 - Return to Main Menu");
 
             System.out.println();
-            System.out.print("Enter : ");
+            System.out.print("Enter your choice : ");
 
             int choice = sc.nextInt();
 
@@ -185,7 +185,8 @@ public class MenuHandler {
         boolean cond = true;
 
         while (cond) {
-            System.out.println("--------------COURSE MANAGEMENT MENU--------------");
+            clearConsole();
+            System.out.println("\n--------------COURSE MANAGEMENT MENU--------------");
             System.out.println("1 - Add a Course");
             System.out.println("2 - Remove a Course");
             System.out.println("3 - Update a Course");
@@ -210,8 +211,12 @@ public class MenuHandler {
                     System.out.print("Enter credits : ");
                     String credits = sc.nextLine();
 
+
                     System.out.print("Enter Instructor ID (or 0 if unknown): ");
                     int insID = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println("Enter course Capacity : ");
+                    int maxCapacity = sc.nextInt();
                     sc.nextLine();
 
                     Instructor instructor = instructorService.findInstructor(insID);
@@ -221,7 +226,7 @@ public class MenuHandler {
                     }
 
 
-                    courseService.addCourses(courseName, courseCode, credits, instructor);
+                    courseService.addCourses(courseName, courseCode, credits, instructor, maxCapacity );
                     System.out.println("Course successfully added!");
                     break;
                 }
@@ -300,7 +305,8 @@ public class MenuHandler {
                 }
 
                 case 6: {
-                    courseService.showCourses();
+                    EnrolmentService enrolmentService1 = enrolmentService;
+                    courseService.showCourses(enrolmentService1);
                     break;
                 }
 
@@ -343,7 +349,8 @@ public class MenuHandler {
         boolean cond = true;
 
         while (cond){
-            System.out.println("--------------INSTRUCTOR MANAGEMENT MENU--------------");
+            clearConsole();
+            System.out.println("\n--------------INSTRUCTOR MANAGEMENT MENU--------------");
             System.out.println("1 - Add a Instructor");
             System.out.println("2 - Remove a Instructor");
             System.out.println("3 - Find Instructor");
@@ -435,12 +442,15 @@ public class MenuHandler {
 
         boolean cond = true;
         while (cond){
-            System.out.println("--------------ENROLMENT MANAGEMENT MENU--------------");
+            clearConsole();
+            System.out.println("\n--------------ENROLMENT MANAGEMENT MENU--------------");
             System.out.println("1 - Enrol Student in Course");
             System.out.println("2 - Unenrol Student from Course");
             System.out.println("3 - Assign/Update Grade");
             System.out.println("4 - Find Enrolment");
             System.out.println("5 - Show all enrolments");
+            System.out.println("6 - Show Course Roster");
+            System.out.println("7 - Show Student Schedule");
             System.out.println("0 - Back to Main Menu");
 
             System.out.println();
@@ -516,6 +526,18 @@ public class MenuHandler {
                     enrolmentService.showEnrolments();
                     break;
                 }
+                case 6: {
+                    System.out.print("Enter Course ID to see roster: ");
+                    int cId = sc.nextInt();
+                    enrolmentService.showCourseRoster(cId);
+                    break;
+                }
+                case 7: {
+                    System.out.print("Enter Student ID to see schedule: ");
+                    int sId = sc.nextInt();
+                    enrolmentService.showStudentSchedule(sId);
+                    break;
+                }
                 case 0:{
                     System.out.println("Returning to main menu...");
                     cond = false;
@@ -545,10 +567,10 @@ public class MenuHandler {
         instructorService.addInstructor("Dr. Asim", "Ali", "0321-2882829", "Asim.ali@uok.com");
         instructorService.addInstructor("Dr. Ayesha", "Rehman", "0300-1122334", "ayesha.rehman@uok.com");
 
-        courseService.addCourses("Object Oriented Programming", "BSCS-401", "3", instructorService.findInstructor(1));
-        courseService.addCourses("Management Information System", "BSCS-502", "3", instructorService.findInstructor(2));
-        courseService.addCourses("Data Structures", "BSCS-402", "3", instructorService.findInstructor(3));
-        courseService.addCourses("Database Systems", "BSCS-403", "3", instructorService.findInstructor(1));
+        courseService.addCourses("Object Oriented Programming", "BSCS-401", "3", instructorService.findInstructor(1), 80);
+        courseService.addCourses("Management Information System", "BSCS-502", "3", instructorService.findInstructor(2), 80);
+        courseService.addCourses("Data Structures", "BSCS-402", "3", instructorService.findInstructor(3), 80);
+        courseService.addCourses("Database Systems", "BSCS-403", "3", instructorService.findInstructor(1), 80 );
 
         enrolmentService.enrolStudent(1, 1); // Faraz in OOP
         enrolmentService.enrolStudent(1, 4); // Faraz in Database
@@ -557,6 +579,10 @@ public class MenuHandler {
         enrolmentService.enrolStudent(4, 3); // Sara in Data Structures
         enrolmentService.enrolStudent(5, 3); // Zain in Data Structures
 
+    }
+
+    public static void clearConsole() {
+        System.out.println("\n".repeat(10));
     }
 
 }

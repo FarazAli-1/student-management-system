@@ -45,19 +45,29 @@ public class EnrolmentService {
             }
         }
 
+        if (getAvailableSeats(courseID) <= 0) {
+            System.out.println("Course is full!");
+            return;
+        }
+
         Enrolment newEnrolment = new Enrolment(newID++, s, c );
         enrolments.add(newEnrolment);
 
     }
 
     public void unenrolStudent(int studentID, int courseID){
-        for (Enrolment e : enrolments){
-            if (e.getStudent().getStudentID() == studentID && e.getCourse().getCourseID() == courseID){
-                enrolments.remove(e);
-                return;
-            }
+
+        boolean removed = enrolments.removeIf(e ->
+                e.getStudent().getStudentID() == studentID &&
+                        e.getCourse().getCourseID() == courseID
+        );
+        if (removed) {
+            System.out.println("Student successfully unenroled.");
+        } else {
+            System.out.println("No student found with such record.");
         }
-        System.out.println("No student found with such record");
+
+
     }
 
     public void assignGrade(int studentID, int courseID, Grade grade){
@@ -83,6 +93,61 @@ public class EnrolmentService {
         return null;
     }
 
+    public int getAvailableSeats(int courseID) {
+        Course c = courseService.findCourseByID(courseID);
+        int count = 0;
+        for (Enrolment e : enrolments) {
+            if (e.getCourse().getCourseID() == courseID) count++;
+        }
+        return c.getMaxCapacity() - count;
+    }
+
+    public void showCourseRoster(int courseID) {
+        Course course = courseService.findCourseByID(courseID);
+        if (course == null) {
+            System.out.println("Error: Course not found.");
+            return;
+        }
+
+        System.out.println("--- Roster for: " + course.getCourseName() + " ---");
+        boolean found = false;
+
+        for (Enrolment e : enrolments) {
+            if (e.getCourse().getCourseID() == courseID) {
+                Student s = e.getStudent();
+                System.out.println("ID: " + s.getStudentID() + " | Name: " + s.getFirstName() + " " + s.getLastName());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No students enrolled in this course yet.");
+        }
+    }
+
+    public void showStudentSchedule(int studentID) {
+        Student student = studentService.findStudent(studentID);
+        if (student == null) {
+            System.out.println("Error: Student not found.");
+            return;
+        }
+
+        System.out.println("--- Schedule for: " + student.getFirstName() + " " + student.getLastName() + " ---");
+        boolean found = false;
+
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == studentID) {
+                Course c = e.getCourse();
+                System.out.println("Course ID: " + c.getCourseID() + " | Name: " + c.getCourseName());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("This student is not enrolled in any courses.");
+        }
+    }
+
     public void showEnrolments (){
 
         if (enrolments.isEmpty()){
@@ -99,6 +164,7 @@ public class EnrolmentService {
                         e.getEnrolmentStartDate() != null ? e.getEnrolmentStartDate() : "N/A",
                         e.getGrade() != null ? e.getGrade() : "N/A",
                         e.getCourse().getCourseName() != null ? e.getCourse().getCourseName() : "N/A");
+
             }
             System.out.println("-------------------------------------------------------------------------------------------");
 

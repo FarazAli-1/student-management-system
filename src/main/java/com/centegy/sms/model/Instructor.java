@@ -6,10 +6,6 @@ public class Instructor {
         return instructorID;
     }
 
-    public void setInstructorID(int instructorID) {
-        this.instructorID = instructorID;
-    }
-
     public String getFirstName() {
         return firstName;
     }

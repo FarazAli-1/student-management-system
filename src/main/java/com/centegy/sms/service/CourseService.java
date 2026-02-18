@@ -20,7 +20,7 @@ public class CourseService {
    public List<Course> courses = new ArrayList<>();
 
    private static int nextID = 1;
-    public void addCourses(String courseName, String courseCode, String credits, Instructor instructorID){
+    public void addCourses(String courseName, String courseCode, String credits, Instructor instructorID, int maxCapacity) {
 
         if (instructorID == null) {
             System.out.println("Warning: Course created without an assigned instructor.");
@@ -37,7 +37,8 @@ public class CourseService {
                 courseName,
                 courseCode,
                 credits,
-                instructorID
+                instructorID,
+                maxCapacity
         );
         courses.add(course);
     }
@@ -124,23 +125,27 @@ public class CourseService {
         return false;
     }
 
-    public void showCourses (){
+    public void showCourses (EnrolmentService enrolmentService) {
 
         if (courses.isEmpty()){
             System.out.println("No record available");
         }
         else {
-            System.out.println("----------------------------------------------------------------------------");
-            System.out.printf("%-5s | %-35s | %-15s | %-8s | %-20s \n", "ID" , "Course Name", "Course Code", "Credits", "Instructor");
-            System.out.println("----------------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-5s | %-35s | %-15s | %-8s | %-8s | %-20s | %-20s \n", "ID" , "Course Name", "Course Code", "Credits", "Capacity", "Remaining Seats" , "Instructor");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
             for (Course course : courses) {
-                System.out.printf("%-5s | %-35s | %-15s | %-8s | %-20s\n",
+                int available = enrolmentService.getAvailableSeats(course.getCourseID());
+                System.out.printf("%-5s | %-35s | %-15s | %-8s | %-8s | %-20s | %-20s \n",
                         course.getCourseID(),
                         course.getCourseName(),
                         course.getCourseCode(),
                         course.getCredits(),
+                        course.getMaxCapacity(),
+                        available,
                         course.getInstructorID() != null ? course.getInstructorID().getFirstName() : "Unassigned");
             }
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
         }
     }
 }

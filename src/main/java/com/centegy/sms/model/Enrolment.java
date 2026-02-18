@@ -25,9 +25,6 @@ public class Enrolment {
         return enrolmentID;
     }
 
-    public void setEnrolmentID(int enrolmentID) {
-        this.enrolmentID = enrolmentID;
-    }
 
     public LocalDate getEnrolmentStartDate() {
         return enrolmentStartDate;
@@ -57,16 +54,8 @@ public class Enrolment {
         return course;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public Student getStudent() {
         return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     private int enrolmentID;

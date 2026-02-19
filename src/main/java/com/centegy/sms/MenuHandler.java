@@ -25,9 +25,60 @@ public class MenuHandler {
         System.out.println("2 - Course Management Menu");
         System.out.println("3 - Instructor Management Menu");
         System.out.println("4 - Enrolment Management Menu");
+        System.out.println("5 - Examination Management Menu");
         System.out.println("0 - Exit");
     }
 
+
+    static void examinationMenu(){
+        boolean examRunning = true;
+            while (examRunning) {
+                System.out.println("\n--------------Examination & Academic Records--------------");
+                System.out.println("1 - Enter/Update Exam Marks");
+                System.out.println("2 - View Student Transcript (GPA)");
+                System.out.println("0 - Back to Main Menu");
+                System.out.print("Enter your Choice: ");
+                int examChoice = sc.nextInt();
+                sc.nextLine();
+
+                switch (examChoice) {
+                    case 1: {
+                        System.out.print("Enter Student ID: ");
+                        int sID = sc.nextInt();
+                        System.out.print("Enter Course ID: ");
+                        int cID = sc.nextInt();
+                        if (!enrolmentService.isStudentEnrolled(sID, cID)) {
+                            System.out.println("Error: Student ID " + sID + " is not enrolled in Course ID " + cID);
+                        } else {
+                            System.out.print("Enter Numeric Score (0-100): ");
+                            int score = sc.nextInt();
+                            sc.nextLine();
+
+                            if (score < 0 || score > 100){
+                                System.out.println("Error: Score must be between 0 and 100.");
+                            } else {
+                                enrolmentService.assignMarks(sID, cID, score);
+                            }
+                        }
+                        break;
+                    }
+                    case 2: {
+                        System.out.print("Enter Student ID for Transcript: ");
+                        int sID = sc.nextInt();
+                        sc.nextLine();
+                        enrolmentService.showTranscript(sID, studentService);
+                        break;
+                    }
+                    case 0:
+                        examRunning = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }
+
+
+    }
     static void studentMenu() {
 
         boolean cond = true;
@@ -563,7 +614,6 @@ public class MenuHandler {
             System.out.println("\n--------------ENROLMENT MANAGEMENT MENU--------------");
             System.out.println("1 - Enrol Student in Course");
             System.out.println("2 - Unenrol Student from Course");
-            System.out.println("3 - Assign/Update Grade");
             System.out.println("4 - Find Enrolment");
             System.out.println("5 - Show all enrolments");
             System.out.println("6 - Show Course Roster");
@@ -613,22 +663,6 @@ public class MenuHandler {
                     int sID = sc.nextInt();
                     System.out.print("Enter Course ID: ");
                     int cID = sc.nextInt();
-                    System.out.print("Enter Grade (A, B, C, D, F): ");
-                    String gInput = sc.nextLine().toUpperCase().trim();
-
-                    try {
-                        Grade g = Grade.valueOf(gInput);
-                        enrolmentService.assignGrade(sID, cID, g);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Invalid Grade entered.");
-                    }
-                    break;
-                }
-                case 4:{
-                    System.out.print("Enter Student ID: ");
-                    int sID = sc.nextInt();
-                    System.out.print("Enter Course ID: ");
-                    int cID = sc.nextInt();
                     Enrolment enrolment = enrolmentService.findEnrolment(sID,cID);
                     if (enrolment == null) {
                         System.out.println("Student or Course not found.");
@@ -639,17 +673,17 @@ public class MenuHandler {
                     break;
 
                 }
-                case 5:{
+                case 4:{
                     enrolmentService.showEnrolments();
                     break;
                 }
-                case 6: {
+                case 5: {
                     System.out.print("Enter Course ID to see roster: ");
                     int cId = sc.nextInt();
                     enrolmentService.showCourseRoster(cId);
                     break;
                 }
-                case 7: {
+                case 6: {
                     System.out.print("Enter Student ID to see schedule: ");
                     int sId = sc.nextInt();
                     enrolmentService.showStudentSchedule(sId);

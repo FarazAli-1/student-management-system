@@ -84,17 +84,6 @@ public class EnrolmentService {
         }
     }
 
-    public void assignGrade(int studentID, int courseID, Grade grade){
-        for (Enrolment e : enrolments){
-            if (e.getStudent().getStudentID() == studentID && e.getCourse().getCourseID() == courseID){
-                e.setGrade(grade);
-                System.out.println("Grade assigned Successfully");
-                return;
-            }
-        }
-        System.out.println("No student found with such record");
-    }
-
     public int countEnrolmentsByStudents(int studentID){
         int count = 0;
         for (Enrolment enrolment : enrolments){
@@ -111,7 +100,98 @@ public class EnrolmentService {
         return count;
     }
 
+    public boolean isStudentEnrolled(int studentID, int courseID) {
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == studentID &&
+                    e.getCourse().getCourseID() == courseID) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public Grade getGradeFromScore(int score) {
+        if (score >= 90) return Grade.A_PLUS;
+        if (score >= 85) return Grade.A;
+        if (score >= 80) return Grade.A_MINUS;
+        if (score >= 75) return Grade.B_PLUS;
+        if (score >= 71) return Grade.B;
+        if (score >= 68) return Grade.B_MINUS;
+        if (score >= 64) return Grade.C_PLUS;
+        if (score >= 61) return Grade.C;
+        if (score >= 57) return Grade.C_MINUS;
+        if (score >= 53) return Grade.D_PLUS;
+        if (score >= 45) return Grade.D;
+        return Grade.FAILS;
+    }
+
+    public void assignMarks(int studentID, int courseID, int score) {
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == studentID && e.getCourse().getCourseID() == courseID) {
+                e.setNumericScore(score);
+                Grade calculatedGrade = getGradeFromScore(score);
+                e.setGrade(calculatedGrade);
+                System.out.println("Marks Assigned: " + score);
+                System.out.println("Grade: " + calculatedGrade + " (GPA: " + calculatedGrade.getPoints() + ")");
+                return;
+            }
+        }
+        System.out.println("No enrollment found for this Student in this Course.");
+    }
+
+    public double calculateStudentGPA(int studentID) {
+        double totalWeightedPoints = 0;
+        int totalCredits = 0;
+
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == studentID && e.getGrade() != Grade.N_A) {
+                int credits = parseCredits(e.getCourse().getCredits());
+                totalWeightedPoints += (e.getGrade().getPoints() * credits);
+                totalCredits += credits;
+            }
+        }
+
+        if (totalCredits == 0) return 0.0;
+        return totalWeightedPoints / totalCredits;
+    }
+
+    public int parseCredits(String creditString) {
+        String[] parts = creditString.split("\\+");
+        int total = 0;
+        for (String part : parts) {
+            total += Integer.parseInt(part.trim());
+        }
+        return total;
+    }
+
+    public void showTranscript(int studentID, StudentService studentService) {
+        Student s = studentService.findStudent(studentID);
+        if (s == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+
+        System.out.println("\n------------------------------------------------");
+        System.out.println("              ACADEMIC TRANSCRIPT");
+        System.out.println("Student: " + s.getFirstName() + " " + s.getLastName());
+        System.out.println("----------------------------------------------------");
+        System.out.printf("%-30s | %-7s | %-5s\n", "Course", "Grade", "Marks");
+        System.out.println("----------------------------------------------------");
+
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == studentID) {
+                System.out.printf("%-30s | %-7s | %-5.1f\n",
+                        e.getCourse().getCourseName(),
+                        e.getGrade(),
+                        e.getGrade().getPoints());
+            }
+        }
+
+        double finalGPA = calculateStudentGPA(studentID);
+        System.out.println("\n----------------------------------------");
+        System.out.printf("FINAL CGPA: %.2f\n", finalGPA);
+        System.out.println("----------------------------------------\n");
+    }
 
     public Enrolment findEnrolment(int studentID, int courseID){
 

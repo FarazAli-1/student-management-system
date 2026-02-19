@@ -1,16 +1,13 @@
 package com.centegy.sms.model;
 
-import java.time.LocalDate;
-
-import static com.centegy.sms.model.Grade.Pending;
-
 public class Enrolment {
 
     public Enrolment(int enrolmentID, Student student, Course course) {
         this.enrolmentID = enrolmentID;
         this.student = student;
         this.course = course;
-        this.grade = Pending;
+        this.grade = Grade.N_A;
+        this.numericScore = 0;
         this.enrolmentStartDate = "N/A";
         this.endDate = "N/A";
     }
@@ -51,10 +48,19 @@ public class Enrolment {
         return student;
     }
 
+    public int getNumericScore() {
+        return numericScore;
+    }
+
+    public void setNumericScore(int numericScore) {
+        this.numericScore = numericScore;
+    }
+
     private int enrolmentID;
     private String enrolmentStartDate;
     private String endDate;
     private Grade grade;
+    private int numericScore;
     private Course course;
     private Student student;
 
@@ -65,6 +71,7 @@ public class Enrolment {
                 ", First Name = '" + getStudent().getFirstName() + " " + getStudent().getLastName() + '\'' +
                 ", Enrolment Start Date = '" + enrolmentStartDate + '\'' +
                 ", Grade = '" + grade + '\'' +
+                ", Numeric Score = '" + numericScore + '\'' +
                 ", Course Name = '" + getCourse().getCourseName() + '\'' +
                 ", Course Code = '" + getCourse().getCourseCode() + '\'' +
                 '}';

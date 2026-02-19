@@ -45,6 +45,9 @@ public class Main {
                     MenuHandler.enrolmentMenu();
                     break;
 
+                case 5:
+                    MenuHandler.examinationMenu();
+                    break;
                 case 0:
                     System.out.println("Thanks");
                     cond = false;

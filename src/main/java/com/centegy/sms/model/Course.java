@@ -45,17 +45,10 @@ public class Course {
         return courseCode;
     }
 
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
-    }
-
     public int getMaxCapacity() {
         return maxCapacity;
     }
 
-    public void setMaxCapacity(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-    }
 
     private int courseID;
     private String courseName;

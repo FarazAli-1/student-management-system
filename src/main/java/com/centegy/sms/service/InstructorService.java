@@ -1,5 +1,6 @@
 package com.centegy.sms.service;
 
+import com.centegy.sms.model.Enrolment;
 import com.centegy.sms.model.Instructor;
 import com.centegy.sms.model.Student;
 
@@ -40,8 +41,54 @@ public class InstructorService {
         return null;
     }
 
+    public List<Instructor> searchByName(String name){
+        List<Instructor> results = new ArrayList<>();
+        for (Instructor i : instructors){
+            if (i.getFirstName().equalsIgnoreCase(name) || i.getLastName().equalsIgnoreCase(name)){
+                results.add(i);
+            }
+        }
+        return results;
+    }
+
     public boolean removeInstructor (int instructorID){
         return instructors.removeIf(i -> i.getInstructorID() == instructorID);
+    }
+
+    public void updateInstructor(int instructorID, int choice, String newValue) {
+        for (Instructor i : instructors) {
+            if (i.getInstructorID() == instructorID) {
+                switch (choice) {
+                    case 1 : {
+                        i.setFirstName(newValue);
+                        break;
+                    }
+                    case 2 :{
+                        i.setLastName(newValue);
+                        break;
+                    }
+                    case 3 :{
+                        i.setPhoneNumber(newValue);
+                        break;
+                    }
+                    case 4 :{
+                        i.setEmail(newValue);
+                        break;
+                    }
+                    case 0 : {
+                        return;
+                    }
+                    default :
+                    {
+                        System.out.println("Invalid Choice");
+                        return;
+                    }
+                }
+                System.out.println("Update Successful");
+                return;
+            }
+        }
+        System.out.println("Instructor with ID " + instructorID + " doesn't exist");
     }
 
     public void showInstructors (){
@@ -50,16 +97,26 @@ public class InstructorService {
             System.out.println("No record available");
         }
         else {
+            List<Instructor> sortedList = new ArrayList<>(instructors);
+            sortedList.sort((s1,s2) -> {
+                int res = s1.getFirstName().compareToIgnoreCase(s2.getFirstName());
+                if (res != 0) {
+                    return res;
+                }
+                return s1.getLastName().compareToIgnoreCase(s2.getLastName());
+            });
+
             System.out.println("----------------------------------------------------------------------------");
-            System.out.printf("%-10s | %-30s | %-20s | %-30s\n", "ID" , "Name", "Phone Number", "Email");
+            System.out.printf("%-5s | %-25s | %-15s | %-30s\n", "ID" , "Name", "Phone Number", "Email");
             System.out.println("----------------------------------------------------------------------------");
-            for (Instructor instructor : instructors) {
-                System.out.printf("%-10s | %-30s | %-20s | %-30s\n",
+            for (Instructor instructor : sortedList) {
+                System.out.printf("%-5s | %-25s | %-15s | %-30s\n",
                         instructor.getInstructorID(),
                         instructor.getFirstName() + " " + instructor.getLastName(),
                         instructor.getPhoneNumber(),
                         instructor.getEmail());
             }
+            System.out.println("----------------------------------------------------------------------------");
             System.out.println();
         }
     }

@@ -85,51 +85,81 @@ public class MenuHandler {
                 case 2: {
                     System.out.println("Enter the ID of the student you want to remove");
                     int sID = sc.nextInt();
+                    sc.nextLine();
 
-                    if (studentService.removeStudent(sID)){
-                        System.out.println("Student successfully removed");
+                    Student studentToProcess = studentService.findStudent(sID);
+                    if (studentToProcess == null){
+                        System.out.println("Student with that ID doesn't exist");
+                        break;
                     }
-                    else {
-                        System.out.println("No Student exists with that ID");
+
+                    int affectedCount = enrolmentService.countEnrolmentsByStudents(sID);
+
+                    System.out.println("Warning! Removing " + studentToProcess.getFirstName() + " " + studentToProcess.getLastName());
+                    System.out.println("This will also PERMANENTLY delete " + affectedCount + " enrolment records.");
+                    System.out.print("Type 'CONFIRM' to proceed: ");
+
+                    String finalCheck = sc.nextLine();
+
+                    if (finalCheck.equalsIgnoreCase("CONFIRM")){
+                        studentService.removeStudent(sID,enrolmentService);
+                        System.out.println("Student and all associated records successfully removed.");
+                    } else {
+                        System.out.println("Deletion cancelled. No data was changed.");
                     }
-
-
                     break;
                 }
-                case 3:{
 
-                    boolean running = true;
-                    while (running){
-                        System.out.println("Enter the ID of the Student whose information you want to update.");
-                        System.out.print("Student ID : ");
+                case 3: {
+                    boolean updateAnotherStudent = true;
+                    while (updateAnotherStudent) {
+                        System.out.println("\n--- Update Student Information ---");
+                        System.out.print("Enter Student ID : ");
                         int sID = sc.nextInt();
-                        if (sID == 0) {
-                            running = false;
-                            break;
-                        }
-                        System.out.println("Which information do you want to update?");
-                        System.out.println("1 - Update First Name");
-                        System.out.println("2 - Update Last Name");
-                        System.out.println("3 - Update Phone Number");
-                        System.out.println("4 - Update Email");
-                        System.out.println("0 - Exit");
-                        System.out.print("Enter your choice : ");
-                        int c = sc.nextInt();
                         sc.nextLine();
-                        if (c == 0) {
-                            running = false;
-                            break;
-                        }
-                        System.out.println();
-                        System.out.print("Enter the new information: ");
-                        String newValue = sc.nextLine();
-                        studentService.updateStudent(sID , c , newValue);
-                        System.out.println("Would you like to update another student? (1 for Yes, 0 for No)");
-                        if (sc.nextInt() == 0) {
-                            System.out.println("Returning to Main Menu...");
-                            running = false;
+
+                        Student found = studentService.findStudent(sID);
+                        if (found == null) {
+                            System.out.println("No Student exists with ID : " + sID);
+                        } else {
+                            boolean updateMoreFields = true;
+                            while (updateMoreFields) {
+                                System.out.println("\nUpdating: " + found.getFirstName() + " " + found.getLastName());
+                                System.out.println("1 - Update First Name");
+                                System.out.println("2 - Update Last Name");
+                                System.out.println("3 - Update Phone Number");
+                                System.out.println("4 - Update Email");
+                                System.out.println("0 - Done with this Student");
+                                System.out.print("Enter your choice: ");
+
+                                int c = sc.nextInt();
+                                sc.nextLine();
+
+                                if (c == 0) {
+                                    updateMoreFields = false;
+                                } else if (c >= 1 && c <= 4) {
+                                    System.out.print("Enter new information: ");
+                                    String newValue = sc.nextLine();
+
+                                    studentService.updateStudent(sID, c, newValue);
+
+                                    System.out.println("Would you like to change another field for this student? (1 for Yes, 0 for No)");
+                                    if (sc.nextInt() == 0) {
+                                        updateMoreFields = false;
+                                    }
+                                    sc.nextLine();
+                                } else {
+                                    System.out.println("Invalid choice.");
+                                }
+                            }
                         }
 
+                        System.out.println("\nWould you like to update a DIFFERENT student? (1 for Yes, 0 for No)");
+                        if (sc.nextInt() == 0) {
+                            updateAnotherStudent = false;
+                            System.out.println("Returning to Main Menu...");
+                        }
+                        sc.nextLine();
                     }
                     break;
                 }
@@ -234,13 +264,31 @@ public class MenuHandler {
                 case 2: {
                     System.out.println("Enter the ID of the Course you want to remove");
                     int cID = sc.nextInt();
+                    sc.nextLine();
 
-                    if (courseService.removeCourse(cID)) {
-                        System.out.println("Course successfully removed");
+                    Course courseToProcess = courseService.findCourseByID(cID);
+
+                    if (courseToProcess == null){
+                        System.out.println("No Course exists with such ID");
+                        break;
+                    }
+
+                    int affectedCount = enrolmentService.countEnrolmentsByCourse(cID);
+
+                    System.out.println("Warning! Removing " + courseToProcess.getCourseName());
+                    System.out.println("This course has " + affectedCount + " students enrolled.");
+                    System.out.print("Type 'CONFIRM' to proceed: ");
+
+                    String finalCheck = sc.nextLine();
+
+                    if (finalCheck.equalsIgnoreCase("CONFIRM")){
+                        courseService.removeCourse(cID,enrolmentService);
+                        System.out.println("Course and all associated records successfully removed.");
                     } else {
-                        System.out.println("No Course exists with that ID");
+                        System.out.println("Deletion cancelled. No data was changed.");
                     }
                     break;
+
                 }
                 case 3: {
                     boolean running = true;
@@ -353,11 +401,11 @@ public class MenuHandler {
             System.out.println("\n--------------INSTRUCTOR MANAGEMENT MENU--------------");
             System.out.println("1 - Add a Instructor");
             System.out.println("2 - Remove a Instructor");
-            System.out.println("3 - Find Instructor");
-            System.out.println("4 - List all Instructors");
+            System.out.println("3 - Update a Instructor's Information");
+            System.out.println("4 - Find Instructor by ID");
+            System.out.println("5 - Find Instructor by Name");
+            System.out.println("6 - List all Instructors");
             System.out.println("0 - Back to Main Menu");
-
-
 
             System.out.print("Enter : ");
             int choice = sc.nextInt();
@@ -398,9 +446,9 @@ public class MenuHandler {
                 }
                 case 2: {
                     System.out.println("Enter the ID of the instructor you want to remove");
-                    int sID = sc.nextInt();
+                    int insID = sc.nextInt();
 
-                    if (instructorService.removeInstructor(sID)){
+                    if (instructorService.removeInstructor(insID)){
                         System.out.println("Instructor successfully removed");
                     }
                     else {
@@ -410,6 +458,58 @@ public class MenuHandler {
                     break;
                 }
                 case 3: {
+                    boolean updateAnotherInstructor = true;
+                    while (updateAnotherInstructor) {
+                        System.out.println("\n--- Update Instructor Information ---");
+                        System.out.print("Enter Instructor ID: ");
+                        int iID = sc.nextInt();
+                        sc.nextLine();
+
+                        Instructor found = instructorService.findInstructor(iID);
+                        if (found == null) {
+                            System.out.println("No Instructor exists with ID : " + iID);
+                        } else {
+                            boolean updateMoreFields = true;
+                            while (updateMoreFields) {
+                                System.out.println("\nUpdating: " + found.getFirstName() + " " + found.getLastName());
+                                System.out.println("1 - Update First Name");
+                                System.out.println("2 - Update Last Name");
+                                System.out.println("3 - Update Phone Number");
+                                System.out.println("4 - Update Email");
+                                System.out.println("0 - Done with this Instructor");
+                                System.out.print("Enter your choice : ");
+
+                                int c = sc.nextInt();
+                                sc.nextLine();
+
+                                if (c == 0) {
+                                    updateMoreFields = false;
+                                } else if (c >= 1 && c <= 4) {
+                                    System.out.print("Enter new information : ");
+                                    String newValue = sc.nextLine();
+                                    instructorService.updateInstructor(iID, c, newValue);
+
+                                    System.out.println("Would you like to change another field for this instructor? (1 for Yes, 0 for No)");
+                                    if (sc.nextInt() == 0) {
+                                        updateMoreFields = false;
+                                    }
+                                    sc.nextLine();
+                                } else {
+                                    System.out.println("Invalid choice.");
+                                }
+                            }
+                        }
+
+                        System.out.println("\nWould you like to update a DIFFERENT instructor? (1 for Yes, 0 for No)");
+                        if (sc.nextInt() == 0) {
+                            updateAnotherInstructor = false; // Breaks outer loop
+                            System.out.println("Returning to Main Menu...");
+                        }
+                        sc.nextLine();
+                    }
+                    break;
+                }
+                case 4: {
                     System.out.println("Enter Instructor ID");
                     int insID = sc.nextInt();
                     Instructor instructor = instructorService.findInstructor(insID);
@@ -422,7 +522,24 @@ public class MenuHandler {
                     }
                     break;
                 }
-                case 4: {
+                case 5:{
+                    System.out.print("Enter Instructor Name : ");
+                    sc.nextLine();
+                    String instructorName = sc.nextLine();
+                    List<Instructor> foundInstructors = instructorService.searchByName(instructorName);
+
+                    if (foundInstructors.isEmpty()) {
+                        System.out.println("No Student found with that name.");
+                    } else {
+                        System.out.println("Found " + foundInstructors.size() + " Students");
+                        for (Instructor ins : foundInstructors){
+                            System.out.println(ins);
+                        }
+                    }
+                    break;
+                }
+
+                case 6: {
                     instructorService.showInstructors();
                     break;
                 }
@@ -582,7 +699,7 @@ public class MenuHandler {
     }
 
     public static void clearConsole() {
-        System.out.println("\n".repeat(10));
+        System.out.println("\n".repeat(1));
     }
 
 }

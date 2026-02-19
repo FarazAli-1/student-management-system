@@ -1,5 +1,6 @@
 package com.centegy.sms.service;
 
+import com.centegy.sms.model.Enrolment;
 import com.centegy.sms.model.Student;
 
 import java.util.ArrayList;
@@ -53,8 +54,12 @@ public class StudentService {
         return results;
     }
 
-    public boolean removeStudent (int studentID){
-        return students.removeIf(s -> s.getStudentID() == studentID);
+    public boolean removeStudent (int studentID, EnrolmentService enrolmentService){
+        boolean removed = students.removeIf(s -> s.getStudentID() == studentID);
+        if (removed) {
+            enrolmentService.removeAllEnrolmentsByStudent(studentID);
+        }
+        return removed;
     }
 
     public Student updateStudent(int studentID, int choice,String newValue){
@@ -79,7 +84,7 @@ public class StudentService {
                     }
                     case 0: {
                         System.out.println("Thank You!");
-                        break;
+                        return s;
                     }
                     default:
                         System.out.println("Invalid Choice");
@@ -92,8 +97,6 @@ public class StudentService {
         System.out.println("Student with ID doesn't exist");
         return null;
     }
-
-
 
     public void showStudents (){
 

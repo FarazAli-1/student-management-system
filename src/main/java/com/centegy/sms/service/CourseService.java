@@ -64,8 +64,12 @@ public class CourseService {
         return null;
     }
 
-    public boolean removeCourse (int courseID){
-        return courses.removeIf(c -> c.getCourseID() == courseID);
+    public boolean removeCourse (int courseID, EnrolmentService enrolmentService){
+        boolean removed = courses.removeIf(c -> c.getCourseID()== courseID);
+        if (removed) {
+            enrolmentService.removeAllEnrolmentsByCourse(courseID);
+        }
+        return removed;
     }
 
     public Course updateCourse(int courseID, int choice, String newValue) {

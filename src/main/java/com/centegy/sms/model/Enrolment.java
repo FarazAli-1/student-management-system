@@ -2,43 +2,36 @@ package com.centegy.sms.model;
 
 import java.time.LocalDate;
 
-public class Enrolment {
+import static com.centegy.sms.model.Grade.Pending;
 
-    public Enrolment(int enrolmentID, LocalDate enrolmentStartDate, LocalDate endDate, Grade grade, Course course, Student student) {
-        this.enrolmentID = enrolmentID;
-        this.enrolmentStartDate = enrolmentStartDate;
-        this.endDate = endDate;
-        this.grade = grade;
-        this.course = course;
-        this.student = student;
-    }
+public class Enrolment {
 
     public Enrolment(int enrolmentID, Student student, Course course) {
         this.enrolmentID = enrolmentID;
         this.student = student;
         this.course = course;
+        this.grade = Pending;
+        this.enrolmentStartDate = "N/A";
+        this.endDate = "N/A";
     }
-
-
 
     public int getEnrolmentID() {
         return enrolmentID;
     }
 
-
-    public LocalDate getEnrolmentStartDate() {
+    public String getEnrolmentStartDate() {
         return enrolmentStartDate;
     }
 
-    public void setEnrolmentStartDate(LocalDate enrolmentStartDate) {
+    public void setEnrolmentStartDate(String enrolmentStartDate) {
         this.enrolmentStartDate = enrolmentStartDate;
     }
 
-    public LocalDate getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -59,8 +52,8 @@ public class Enrolment {
     }
 
     private int enrolmentID;
-    private LocalDate enrolmentStartDate;
-    private LocalDate endDate;
+    private String enrolmentStartDate;
+    private String endDate;
     private Grade grade;
     private Course course;
     private Student student;

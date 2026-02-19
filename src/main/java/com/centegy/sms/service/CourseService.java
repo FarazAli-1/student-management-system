@@ -19,6 +19,10 @@ public class CourseService {
 
    public List<Course> courses = new ArrayList<>();
 
+    public List<Course> getAllCourses() {
+        return this.courses;
+    }
+
    private static int nextID = 1;
     public void addCourses(String courseName, String courseCode, String credits, Instructor instructorID, int maxCapacity) {
 
@@ -147,7 +151,7 @@ public class CourseService {
                         course.getCredits(),
                         course.getMaxCapacity(),
                         available,
-                        course.getInstructorID() != null ? course.getInstructorID().getFirstName() : "Unassigned");
+                        course.getInstructorID() != null ? (course.getInstructorID().getFirstName() + " " + course.getInstructorID().getLastName()) : "Unassigned");
             }
             System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
         }

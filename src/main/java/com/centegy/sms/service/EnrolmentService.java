@@ -12,6 +12,10 @@ public class EnrolmentService {
 
     private List<Enrolment> enrolments = new ArrayList<>();
 
+    public List<Enrolment> getAllEnrolments() {
+        return this.enrolments;
+    }
+
     private static int newID = 1;
 
     public EnrolmentService(StudentService studentService, CourseService courseService){
@@ -226,7 +230,7 @@ public class EnrolmentService {
         for (Enrolment e : enrolments) {
             if (e.getCourse().getCourseID() == courseID) {
                 Student s = e.getStudent();
-                System.out.println("ID: " + s.getStudentID() + " | Name: " + s.getFirstName() + " " + s.getLastName());
+                System.out.println("Student ID: " + s.getStudentID() + " | Name: " + s.getFirstName() + " " + s.getLastName());
                 found = true;
             }
         }

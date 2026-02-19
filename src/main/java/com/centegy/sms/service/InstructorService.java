@@ -1,8 +1,6 @@
 package com.centegy.sms.service;
 
-import com.centegy.sms.model.Enrolment;
 import com.centegy.sms.model.Instructor;
-import com.centegy.sms.model.Student;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +8,11 @@ import java.util.List;
 public class InstructorService {
 
     private List<Instructor> instructors = new ArrayList<>();
+
+    public List<Instructor> getAllInstructors() {
+        return this.instructors;
+    }
+
     private static int nextID = 1;
 
     public void addInstructor(String firstName, String lastName, String phoneNumber, String email){

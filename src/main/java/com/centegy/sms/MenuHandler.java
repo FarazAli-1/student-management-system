@@ -7,6 +7,7 @@ import com.centegy.sms.service.InstructorService;
 import com.centegy.sms.service.StudentService;
 import com.centegy.sms.utils.ValidationUtils;
 
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,6 +27,7 @@ public class MenuHandler {
         System.out.println("3 - Instructor Management Menu");
         System.out.println("4 - Enrolment Management Menu");
         System.out.println("5 - Examination Management Menu");
+        System.out.println("6 - Display System Dashboard");
         System.out.println("0 - Exit");
     }
 
@@ -357,7 +359,6 @@ public class MenuHandler {
                         sc.nextLine();
 
                         if (c == 0) {
-                            running = false;
                             break;
                         }
 
@@ -614,10 +615,10 @@ public class MenuHandler {
             System.out.println("\n--------------ENROLMENT MANAGEMENT MENU--------------");
             System.out.println("1 - Enrol Student in Course");
             System.out.println("2 - Unenrol Student from Course");
-            System.out.println("4 - Find Enrolment");
-            System.out.println("5 - Show all enrolments");
-            System.out.println("6 - Show Course Roster");
-            System.out.println("7 - Show Student Schedule");
+            System.out.println("3 - Find Enrolment");
+            System.out.println("4 - Show all enrolments");
+            System.out.println("5 - Show Course Roster");
+            System.out.println("6 - Show Student Schedule");
             System.out.println("0 - Back to Main Menu");
 
             System.out.println();
@@ -706,30 +707,78 @@ public class MenuHandler {
 
     static void initializeData() {
 
-        studentService.addStudent("Faraz", "Ali", "0309-1266745", "faraz.ali@centegytechnologies.com");
+        // --- 1. POPULATE STUDENTS ---
+        studentService.addStudent("Faraz", "Ali", "0309-1266745", "faraz.ali@gmail.com");
         studentService.addStudent("Mohammad", "Umar", "0316-2389923", "M.Umar@gmail.com");
         studentService.addStudent("Mohammad", "Ali", "0308-9781378", "Muhammad.ali@outlook.com");
         studentService.addStudent("Sara", "Khan", "0321-1234567", "sara.khan@gmail.com");
         studentService.addStudent("Zain", "Ahmed", "0345-9876543", "zain.ahmed@yahoo.com");
         studentService.addStudent("Ali", "Ahmed", "0365-9876543", "ali.ahmed@yahoo.com");
+        studentService.addStudent("Hiba", "Fatima", "0331-5566778", "hiba.f@outlook.com");
+        studentService.addStudent("Osman", "Pirzada", "0312-9988776", "osman.p@gmail.com");
+        studentService.addStudent("Ayesha", "Siddiqui", "0300-4455661", "ayesha.sid@yahoo.com");
+        studentService.addStudent("Bilal", "Khan", "0344-2233445", "bilal.k@gmail.com");
+        studentService.addStudent("Dania", "Shah", "0322-7788990", "dania.s@outlook.com");
+        studentService.addStudent("Hamza", "Sheikh", "0311-1122334", "hamza.s@gmail.com");
 
-
-        instructorService.addInstructor("Badar", "Sami", "0333-2938274", "Badar.sami@uok.com");
+        // --- 2. POPULATE INSTRUCTORS ---
+        instructorService.addInstructor("Prof. Badar", "Sami", "0333-2938274", "Badar.sami@uok.com");
         instructorService.addInstructor("Dr. Asim", "Ali", "0321-2882829", "Asim.ali@uok.com");
-        instructorService.addInstructor("Dr. Ayesha", "Rehman", "0300-1122334", "ayesha.rehman@uok.com");
+        instructorService.addInstructor("Dr. Nadeem", "Mehmood", "0300-1122334", "nadeem.mehmood@uok.com");
+        instructorService.addInstructor("Dr. Khalid", "Jamal", "0315-5556667", "khalid.J@uok.com");
+        instructorService.addInstructor("Dr. Humera", "Tariq", "0332-1234567", "H.tariq@uok.com");
+        instructorService.addInstructor("Engr. Fahad", "Mustafa", "0345-0001112", "fahad.m@uok.com");
 
-        courseService.addCourses("Object Oriented Programming", "BSCS-401", "3", instructorService.findInstructor(1), 80);
-        courseService.addCourses("Management Information System", "BSCS-502", "3", instructorService.findInstructor(2), 80);
-        courseService.addCourses("Data Structures", "BSCS-402", "3", instructorService.findInstructor(3), 80);
-        courseService.addCourses("Database Systems", "BSCS-403", "3", instructorService.findInstructor(1), 80 );
+        // --- 3. POPULATE COURSES (Added "2+1" formats for testing) ---
+        courseService.addCourses("Object Oriented Programming", "BSCS-401", "3+1", instructorService.findInstructor(1), 90);
+        courseService.addCourses("Management Information System", "BSCS-502", "3", instructorService.findInstructor(2), 90);
+        courseService.addCourses("Data Structures", "BSCS-402", "3+1", instructorService.findInstructor(3), 90);
+        courseService.addCourses("Database Systems", "BSCS-403", "3+1", instructorService.findInstructor(1), 90);
+        courseService.addCourses("Software Engineering", "BSCS-601", "3", instructorService.findInstructor(4), 90);
+        courseService.addCourses("Discrete Mathematics", "BSCS-301", "3", instructorService.findInstructor(5), 90);
+        courseService.addCourses("Operating Systems", "BSCS-505", "3+1", instructorService.findInstructor(6), 90);
+        courseService.addCourses("Artificial Intelligence", "BSCS-701", "2+1", instructorService.findInstructor(2), 90);
 
-        enrolmentService.enrolStudent(1, 1); // Faraz in OOP
-        enrolmentService.enrolStudent(1, 4); // Faraz in Database
-        enrolmentService.enrolStudent(2, 1); // Umar in OOP
-        enrolmentService.enrolStudent(3, 2); // Ali in MIS
-        enrolmentService.enrolStudent(4, 3); // Sara in Data Structures
-        enrolmentService.enrolStudent(5, 3); // Zain in Data Structures
+        // --- 4. POPULATE ENROLMENTS ---
 
+        // Faraz (ID 1) - Multiple courses to test CGPA
+        enrolmentService.enrolStudent(1, 1); // OOP
+        enrolmentService.enrolStudent(1, 4); // Database
+        enrolmentService.enrolStudent(1, 6); // Discrete Math
+
+        // Umar (ID 2)
+        enrolmentService.enrolStudent(2, 1); // OOP
+        enrolmentService.enrolStudent(2, 5); // Software Engineering
+
+        // Ali (ID 3)
+        enrolmentService.enrolStudent(3, 2); // MIS
+        enrolmentService.enrolStudent(3, 8); // AI
+
+        // Sara (ID 4)
+        enrolmentService.enrolStudent(4, 3); // Data Structures
+        enrolmentService.enrolStudent(4, 7); // Operating Systems
+
+        // Zain (ID 5)
+        enrolmentService.enrolStudent(5, 3); // Data Structures
+        enrolmentService.enrolStudent(5, 4); // Database
+
+        // Ayesha (ID 9) - Heavy course load
+        enrolmentService.enrolStudent(9, 1);
+        enrolmentService.enrolStudent(9, 2);
+        enrolmentService.enrolStudent(9, 3);
+        enrolmentService.enrolStudent(9, 4);
+    }
+
+    static void displayDashboard() {
+        System.out.println("\n-----------------------------------------");
+        System.out.println("        SMS SYSTEM DASHBOARD        ");
+        System.out.println("-----------------------------------------");
+        System.out.printf("  Total Students enrolled:    %d\n", studentService.getAllStudents().size());
+        System.out.printf("  Total Faculty Members:      %d\n", instructorService.getAllInstructors().size());
+        System.out.printf("  Total Courses Offered:      %d\n", courseService.getAllCourses().size());
+        System.out.printf("  Active Enrolments:          %d\n", enrolmentService.getAllEnrolments().size());
+        System.out.println("-----------------------------------------");
+        System.out.println(" System Status: Ready to Process Marks.\n");
     }
 
     public static void clearConsole() {

@@ -2,11 +2,8 @@ package com.centegy.sms;
 
 import java.util.Scanner;
 
-
-
 public class Main {
 
-    static MenuHandler menuHandler = new MenuHandler();
     static Scanner sc = new Scanner(System.in);
 
     static void main(String[] args) {
@@ -18,12 +15,14 @@ public class Main {
             System.exit(0);
         }
 
+
         MenuHandler.initializeData();
 
+        MenuHandler.displayDashboard();
         boolean cond = true;
         while (cond) {
 
-        menuHandler.mainMenu();
+        MenuHandler.mainMenu();
 
         System.out.print("Enter your choice : ");
         int choice = sc.nextInt();
@@ -47,6 +46,10 @@ public class Main {
 
                 case 5:
                     MenuHandler.examinationMenu();
+                    break;
+
+                case 6:
+                    MenuHandler.displayDashboard();
                     break;
                 case 0:
                     System.out.println("Thanks");

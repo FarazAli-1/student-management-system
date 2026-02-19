@@ -38,7 +38,7 @@ public class Instructor {
         this.phoneNumber = phoneNumber;
     }
 
-    private int instructorID;
+    private final int instructorID;
     private String firstName;
     private String lastName;
     private String phoneNumber;

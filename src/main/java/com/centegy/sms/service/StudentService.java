@@ -1,6 +1,5 @@
 package com.centegy.sms.service;
 
-import com.centegy.sms.model.Enrolment;
 import com.centegy.sms.model.Student;
 
 import java.util.ArrayList;
@@ -9,6 +8,10 @@ import java.util.List;
 public class StudentService {
 
     private List<Student> students = new ArrayList<>();
+
+    public List<Student> getAllStudents() {
+        return this.students;
+    }
 
     private static int nextID = 1;
 

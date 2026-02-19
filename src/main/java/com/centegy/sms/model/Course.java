@@ -50,12 +50,12 @@ public class Course {
     }
 
 
-    private int courseID;
+    private final int courseID;
     private String courseName;
     private String courseCode;
     private String credits;
     private Instructor instructorID;
-    private int maxCapacity = 80;
+    private int maxCapacity;
 
 
     @Override

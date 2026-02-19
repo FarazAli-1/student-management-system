@@ -38,7 +38,7 @@ public class Student {
         this.email = email;
     }
 
-    private int studentID;
+    private final int studentID;
     private String firstName;
     private String lastName;
     private String phoneNumber;

@@ -52,7 +52,7 @@ public class Main {
                     MenuHandler.displayDashboard();
                     break;
                 case 0:
-                    System.out.println("Thanks");
+                    System.out.println("Thank You!");
                     cond = false;
                     break;
             }

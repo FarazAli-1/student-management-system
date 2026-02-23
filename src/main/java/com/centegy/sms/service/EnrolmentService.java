@@ -81,13 +81,6 @@ public class EnrolmentService {
         }
     }
 
-    public void removeAllEnrolmentsByCourse(int courseID){
-        String courseName = courseService.findCourseByID(courseID).getCourseName();
-        enrolments.removeIf(e -> e.getCourse().getCourseID() == courseID);{
-            System.out.println("Cleaned up all enrolment records for Student ID: " + courseID + courseName );
-        }
-    }
-
     public int countEnrolmentsByStudents(int studentID){
         int count = 0;
         for (Enrolment enrolment : enrolments){

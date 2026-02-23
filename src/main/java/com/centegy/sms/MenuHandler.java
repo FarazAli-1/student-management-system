@@ -26,7 +26,7 @@ public class MenuHandler {
         System.out.println("2 - Course Management Menu");
         System.out.println("3 - Instructor Management Menu");
         System.out.println("4 - Enrolment Management Menu");
-        System.out.println("5 - Examination Management Menu");
+        System.out.println("5 - Examination & Academic Records");
         System.out.println("6 - Display System Dashboard");
         System.out.println("0 - Exit");
     }
@@ -136,27 +136,30 @@ public class MenuHandler {
                     break;
                 }
                 case 2: {
-                    System.out.println("Enter the ID of the student you want to remove");
+                    System.out.print("Enter the ID of the student to remove: ");
                     int sID = sc.nextInt();
-                    sc.nextLine();
 
-                    Student studentToProcess = studentService.findStudent(sID);
-                    if (studentToProcess == null){
-                        System.out.println("Student with that ID doesn't exist");
+                    Student student = studentService.findStudent(sID);
+                    if (student == null) {
+                        System.out.println("Student with ID " + sID + " doesn't exist.");
                         break;
                     }
 
                     int affectedCount = enrolmentService.countEnrolmentsByStudents(sID);
 
-                    System.out.println("Warning! Removing " + studentToProcess.getFirstName() + " " + studentToProcess.getLastName());
-                    System.out.println("This will also PERMANENTLY delete " + affectedCount + " enrolment records.");
+                    System.out.println("\n WARNING: Removing " + student.getFirstName() + " " + student.getLastName());
+                    System.out.println("This will PERMANENTLY delete the student and " + affectedCount + " enrolment records.");
                     System.out.print("Type 'CONFIRM' to proceed: ");
 
-                    String finalCheck = sc.nextLine();
+                    sc.nextLine();
 
-                    if (finalCheck.equalsIgnoreCase("CONFIRM")){
-                        studentService.removeStudent(sID,enrolmentService);
-                        System.out.println("Student and all associated records successfully removed.");
+                    if (sc.nextLine().equalsIgnoreCase("CONFIRM")) {
+                        boolean success = studentService.removeStudent(sID, enrolmentService);
+                        if (success) {
+                            System.out.println("Student and all associated records removed.");
+                        } else {
+                            System.out.println("Failed to remove student.");
+                        }
                     } else {
                         System.out.println("Deletion cancelled. No data was changed.");
                     }
@@ -315,34 +318,29 @@ public class MenuHandler {
                 }
 
                 case 2: {
-                    System.out.println("Enter the ID of the Course you want to remove");
+                    System.out.print("Enter Course ID to remove: ");
                     int cID = sc.nextInt();
-                    sc.nextLine();
 
-                    Course courseToProcess = courseService.findCourseByID(cID);
-
-                    if (courseToProcess == null){
-                        System.out.println("No Course exists with such ID");
+                    Course course = courseService.findCourseByID(cID);
+                    if (course == null) {
+                        System.out.println("No Course exists with ID: " + cID);
                         break;
                     }
 
-                    int affectedCount = enrolmentService.countEnrolmentsByCourse(cID);
 
-                    System.out.println("Warning! Removing " + courseToProcess.getCourseName());
-                    System.out.println("This course has " + affectedCount + " students enrolled.");
-                    System.out.print("Type 'CONFIRM' to proceed: ");
+                    boolean success = courseService.removeCourse(cID, enrolmentService);
 
-                    String finalCheck = sc.nextLine();
-
-                    if (finalCheck.equalsIgnoreCase("CONFIRM")){
-                        courseService.removeCourse(cID,enrolmentService);
-                        System.out.println("Course and all associated records successfully removed.");
+                    if (success) {
+                        System.out.println("Course '" + course.getCourseName() + "' removed successfully.");
                     } else {
-                        System.out.println("Deletion cancelled. No data was changed.");
+                        int count = enrolmentService.countEnrolmentsByCourse(cID);
+                        System.out.println("CANNOT DELETE: " + course.getCourseName());
+                        System.out.println("STATUS: Currently running with " + count + " students.");
+                        System.out.println("ACTION: Unenrol students first to protect data integrity.");
                     }
                     break;
-
                 }
+
                 case 3: {
                     boolean running = true;
                     while (running) {

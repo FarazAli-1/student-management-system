@@ -68,15 +68,19 @@ public class CourseService {
         return null;
     }
 
-    public boolean removeCourse (int courseID, EnrolmentService enrolmentService){
-        boolean removed = courses.removeIf(c -> c.getCourseID()== courseID);
-        if (removed) {
-            enrolmentService.removeAllEnrolmentsByCourse(courseID);
+    public boolean removeCourse(int courseID, EnrolmentService enrolmentService) {
+        boolean hasEnrolments = enrolmentService.getAllEnrolments().stream()
+                .anyMatch(e -> e.getCourse().getCourseID() == courseID);
+
+        if (hasEnrolments) {
+            return false;
         }
-        return removed;
+
+        return courses.removeIf(c -> c.getCourseID() == courseID);
     }
 
-    public Course updateCourse(int courseID, int choice, String newValue) {
+
+    public void updateCourse(int courseID, int choice, String newValue) {
         for (Course c : courses) {
             if (c.getCourseID() == courseID) {
                 switch (choice) {
@@ -95,11 +99,11 @@ public class CourseService {
                                 System.out.println("Instructor " + instructor.getFirstName() + " assigned to course!");
                             } else {
                                 System.out.println("Error: Instructor ID " + instructorID + " does not exist in the system.");
-                                return null;
+
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Error: '" + newValue + "' is not a valid numeric ID.");
-                            return null;
+
                         }
                         break;
                     }
@@ -113,14 +117,14 @@ public class CourseService {
                     }
                     default:
                         System.out.println("Invalid Choice");
-                        return null;
+
                 }
                 System.out.println("Update Successful");
-                return c;
+
             }
         }
         System.out.println("Course with ID doesn't exist");
-        return null;
+
     }
 
     public boolean assignInstructor(int courseID, Instructor instructor) {

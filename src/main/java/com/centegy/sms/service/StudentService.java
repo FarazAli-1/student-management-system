@@ -43,7 +43,8 @@ public class StudentService {
                 }
             }
 
-        return null;
+        throw new IllegalArgumentException("Student not found");
+
     }
 
 
@@ -57,12 +58,13 @@ public class StudentService {
         return results;
     }
 
-    public boolean removeStudent (int studentID, EnrolmentService enrolmentService){
-        boolean removed = students.removeIf(s -> s.getStudentID() == studentID);
-        if (removed) {
-            enrolmentService.removeAllEnrolmentsByStudent(studentID);
-        }
-        return removed;
+    public boolean removeStudent(int studentID, EnrolmentService enrolmentService) {
+        // 1. First, remove all enrolments linked to this student
+        // This ensures no 'orphan' enrolment records are left behind
+        enrolmentService.removeAllEnrolmentsByStudent(studentID);
+
+        // 2. Then, remove the student from the main list
+        return students.removeIf(s -> s.getStudentID() == studentID);
     }
 
     public Student updateStudent(int studentID, int choice,String newValue){

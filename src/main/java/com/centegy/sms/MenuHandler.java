@@ -104,7 +104,7 @@ public class MenuHandler {
 
             switch (choice) {
                 case 1: {
-                    System.out.println("Enter the details of the student you want to add");
+                    System.out.println("Enter the details of the student you want to add.");
                     sc.nextLine();
                     System.out.print("Enter First Name : ");
                     String firstName = sc.nextLine();
@@ -149,7 +149,7 @@ public class MenuHandler {
 
                     System.out.println("\n WARNING: Removing " + student.getFirstName() + " " + student.getLastName());
                     System.out.println("This will PERMANENTLY delete the student and " + affectedCount + " enrolment records.");
-                    System.out.print("Type 'CONFIRM' to proceed: ");
+                    System.out.print("Type 'CONFIRM' to proceed, or press any other key to cancel: ");
 
                     sc.nextLine();
 
@@ -197,9 +197,22 @@ public class MenuHandler {
                                     System.out.print("Enter new information: ");
                                     String newValue = sc.nextLine();
 
+                                    if (c == 3) {
+                                        if (!ValidationUtils.isValidPhoneNumber(newValue)) {
+                                            System.out.println("Invalid Phone Number format. Update cancelled.");
+                                            continue;
+                                        }
+                                    }
+                                    if (c == 4) {
+                                        if (!ValidationUtils.isValidEmail(newValue)) {
+                                            System.out.println("Invalid Email format. Update cancelled.");
+                                            continue;
+                                        }
+                                    }
                                     studentService.updateStudent(sID, c, newValue);
 
                                     System.out.println("Would you like to change another field for this student? (1 for Yes, 0 for No)");
+                                    System.out.print("Enter your choice : ");
                                     if (sc.nextInt() == 0) {
                                         updateMoreFields = false;
                                     }
@@ -211,6 +224,7 @@ public class MenuHandler {
                         }
 
                         System.out.println("\nWould you like to update a DIFFERENT student? (1 for Yes, 0 for No)");
+                        System.out.print("Enter your choice : ");
                         if (sc.nextInt() == 0) {
                             updateAnotherStudent = false;
                             System.out.println("Returning to Main Menu...");
@@ -222,7 +236,7 @@ public class MenuHandler {
 
                 case 4: {
 
-                    System.out.println("Enter Student ID");
+                    System.out.print("Enter Student ID : ");
                     int sID = sc.nextInt();
                     Student student = studentService.findStudent(sID);
 
@@ -234,9 +248,10 @@ public class MenuHandler {
                     }
                     break;
                 }
-                case 5:{
-                    System.out.print("Enter Student Name : ");
+                case 5: {
                     sc.nextLine();
+                    System.out.print("Enter Student Name : ");
+
                     String studentName = sc.nextLine();
                     List<Student> foundStudents = studentService.searchByName(studentName);
 
@@ -301,7 +316,7 @@ public class MenuHandler {
                     System.out.print("Enter Instructor ID (or 0 if unknown): ");
                     int insID = sc.nextInt();
                     sc.nextLine();
-                    System.out.println("Enter course Capacity : ");
+                    System.out.print("Enter course Capacity : ");
                     int maxCapacity = sc.nextInt();
                     sc.nextLine();
 
@@ -457,7 +472,7 @@ public class MenuHandler {
             System.out.println("6 - List all Instructors");
             System.out.println("0 - Back to Main Menu");
 
-            System.out.print("Enter : ");
+            System.out.print("Enter your choice : ");
             int choice = sc.nextInt();
 
             switch (choice) {
@@ -537,9 +552,22 @@ public class MenuHandler {
                                 } else if (c >= 1 && c <= 4) {
                                     System.out.print("Enter new information : ");
                                     String newValue = sc.nextLine();
+                                    if (c == 3) {
+                                        if (!ValidationUtils.isValidPhoneNumber(newValue)) {
+                                            System.out.println("Invalid Phone Number format. Update cancelled.");
+                                            continue;
+                                        }
+                                    }
+                                    if (c == 4) {
+                                        if (!ValidationUtils.isValidEmail(newValue)) {
+                                            System.out.println("Invalid Email format. Update cancelled.");
+                                            continue;
+                                        }
+                                    }
                                     instructorService.updateInstructor(iID, c, newValue);
 
                                     System.out.println("Would you like to change another field for this instructor? (1 for Yes, 0 for No)");
+                                    System.out.println("Enter your choice : ");
                                     if (sc.nextInt() == 0) {
                                         updateMoreFields = false;
                                     }
@@ -551,6 +579,7 @@ public class MenuHandler {
                         }
 
                         System.out.println("\nWould you like to update a DIFFERENT instructor? (1 for Yes, 0 for No)");
+                        System.out.println("Enter your choice : ");
                         if (sc.nextInt() == 0) {
                             updateAnotherInstructor = false; // Breaks outer loop
                             System.out.println("Returning to Main Menu...");
@@ -560,7 +589,7 @@ public class MenuHandler {
                     break;
                 }
                 case 4: {
-                    System.out.println("Enter Instructor ID");
+                    System.out.print("Enter Instructor ID : ");
                     int insID = sc.nextInt();
                     Instructor instructor = instructorService.findInstructor(insID);
 
@@ -572,16 +601,17 @@ public class MenuHandler {
                     }
                     break;
                 }
-                case 5:{
-                    System.out.print("Enter Instructor Name : ");
+                case 5: {
                     sc.nextLine();
+                    System.out.print("Enter Instructor Name: ");
+
                     String instructorName = sc.nextLine();
                     List<Instructor> foundInstructors = instructorService.searchByName(instructorName);
 
                     if (foundInstructors.isEmpty()) {
-                        System.out.println("No Student found with that name.");
+                        System.out.println("No Instructor found with that name.");
                     } else {
-                        System.out.println("Found " + foundInstructors.size() + " Students");
+                        System.out.println("Found " + foundInstructors.size() + " Instructors");
                         for (Instructor ins : foundInstructors){
                             System.out.println(ins);
                         }
@@ -625,9 +655,9 @@ public class MenuHandler {
 
             switch (choice){
                 case 1:{
-                    System.out.println("Enter Student ID of student you want to enrol");
+                    System.out.print("Enter Student ID of student you want to enrol : ");
                     int sID = sc.nextInt();
-                    System.out.println("Enter Course ID in which you want the student to be enrolled");
+                    System.out.print("Enter Course ID in which you want the student to be enrolled : ");
                     int cID = sc.nextInt();
 
                     Student s = studentService.findStudent(sID);
@@ -635,6 +665,7 @@ public class MenuHandler {
 
                     if (s != null && c != null){
                         enrolmentService.enrolStudent(sID,cID);
+                        System.out.println("Successfully Enrolled");
                     }
                         else {
                             System.out.println("Error: Student or Course ID not found.");
@@ -642,9 +673,9 @@ public class MenuHandler {
                         break;
                 }
                 case 2: {
-                    System.out.println("Enter Student ID of student you want to unenrol");
+                    System.out.print("Enter Student ID of student you want to unenrol : ");
                     int sID = sc.nextInt();
-                    System.out.println("Enter Course ID from which you want the student to be unenroled");
+                    System.out.print("Enter Course ID from which you want the student to be unenrolled : ");
                     int cID = sc.nextInt();
                     Student s = studentService.findStudent(sID);
                     Course c = courseService.findCourseByID(cID);

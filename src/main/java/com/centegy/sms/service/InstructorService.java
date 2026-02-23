@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InstructorService {
 
-    private List<Instructor> instructors = new ArrayList<>();
+    private final List<Instructor> instructors = new ArrayList<>();
 
     public List<Instructor> getAllInstructors() {
         return this.instructors;
@@ -46,8 +46,15 @@ public class InstructorService {
 
     public List<Instructor> searchByName(String name){
         List<Instructor> results = new ArrayList<>();
+        String searchLower = name.toLowerCase().trim();
+
         for (Instructor i : instructors){
-            if (i.getFirstName().equalsIgnoreCase(name) || i.getLastName().equalsIgnoreCase(name)){
+            String firstName = i.getFirstName().toLowerCase();
+            String lastName = i.getLastName().toLowerCase();
+            String fullName = firstName + " " + lastName;
+            if (firstName.contains(searchLower) ||
+                    lastName.contains(searchLower) ||
+                    fullName.contains(searchLower)) {
                 results.add(i);
             }
         }

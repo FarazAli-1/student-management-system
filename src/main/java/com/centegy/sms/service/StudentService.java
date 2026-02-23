@@ -1,6 +1,8 @@
 package com.centegy.sms.service;
 
+import com.centegy.sms.model.Instructor;
 import com.centegy.sms.model.Student;
+import com.centegy.sms.utils.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +52,15 @@ public class StudentService {
 
     public List<Student> searchByName(String name){
         List<Student> results = new ArrayList<>();
+        String searchLower = name.toLowerCase().trim();
+
         for (Student s : students){
-            if (s.getFirstName().equalsIgnoreCase(name) || s.getLastName().equalsIgnoreCase(name)){
+            String firstName = s.getFirstName().toLowerCase();
+            String lastName = s.getLastName().toLowerCase();
+            String fullName = firstName + " " + lastName;
+            if (firstName.contains(searchLower) ||
+                    lastName.contains(searchLower) ||
+                    fullName.contains(searchLower)) {
                 results.add(s);
             }
         }
@@ -59,11 +68,7 @@ public class StudentService {
     }
 
     public boolean removeStudent(int studentID, EnrolmentService enrolmentService) {
-        // 1. First, remove all enrolments linked to this student
-        // This ensures no 'orphan' enrolment records are left behind
         enrolmentService.removeAllEnrolmentsByStudent(studentID);
-
-        // 2. Then, remove the student from the main list
         return students.removeIf(s -> s.getStudentID() == studentID);
     }
 

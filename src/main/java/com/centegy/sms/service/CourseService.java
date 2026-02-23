@@ -123,7 +123,6 @@ public class CourseService {
 
             }
         }
-        System.out.println("Course with ID doesn't exist");
 
     }
 

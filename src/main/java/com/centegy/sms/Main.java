@@ -8,6 +8,7 @@ public class Main {
 
     static void main(String[] args) {
 
+
         System.out.print("Enter Admin Password: ");
         String pass = sc.next();
         if (!pass.equals("admin123")) {

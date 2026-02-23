@@ -7,10 +7,10 @@ import java.util.List;
 
 public class EnrolmentService {
 
-    private StudentService studentService;
-    private CourseService courseService;
+    private final StudentService studentService;
+    private final CourseService courseService;
 
-    private List<Enrolment> enrolments = new ArrayList<>();
+    private final List<Enrolment> enrolments = new ArrayList<>();
 
     public List<Enrolment> getAllEnrolments() {
         return this.enrolments;

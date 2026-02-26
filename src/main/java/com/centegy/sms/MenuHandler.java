@@ -401,6 +401,8 @@ public class MenuHandler {
                         System.out.print("Enter Course ID to update: ");
                         int cID = sc.nextInt();
 
+                        System.out.println("Updating course : " + courseService.findCourseByID(cID).getCourseName());
+
                         System.out.println("Which information do you want to update?");
                         System.out.println("1 - Update Course Name");
                         System.out.println("2 - Update Instructor (Write ID)");
@@ -473,7 +475,7 @@ public class MenuHandler {
                     if (instructor != null) {
                         boolean success = courseService.assignInstructor(courseID, instructor);
                         if (success) {
-                            System.out.println("Instructor " + instructor.getFirstName() + " assigned to course!");
+                            System.out.println(instructor.getFirstName() + " " + instructor.getLastName() + " assigned to " + courseService.findCourseByID(courseID).getCourseName());
                         } else {
                             System.out.println("Error: Course ID " + courseID + " not found.");
                         }
@@ -704,7 +706,6 @@ public class MenuHandler {
 
                     if (s != null && c != null){
                         enrolmentService.enrolStudent(sID,cID);
-                        System.out.println("Successfully Enrolled");
                     }
                         else {
                             System.out.println("Error: Student or Course ID not found.");

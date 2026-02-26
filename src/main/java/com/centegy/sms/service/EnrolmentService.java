@@ -57,6 +57,8 @@ public class EnrolmentService {
         Enrolment newEnrolment = new Enrolment(newID++, s, c );
         enrolments.add(newEnrolment);
 
+        System.out.println("Successfully Enrolled");
+
     }
 
     public void unenrolStudent(int studentID, int courseID){

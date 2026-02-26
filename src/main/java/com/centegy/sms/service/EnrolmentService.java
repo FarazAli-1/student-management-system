@@ -107,6 +107,28 @@ public class EnrolmentService {
         return false;
     }
 
+    public void markAttendance(int sID, int cID, boolean wasPresent) {
+        for (Enrolment e : enrolments) {
+            if (e.getStudent().getStudentID() == sID && e.getCourse().getCourseID() == cID) {
+                e.setTotalSessions(e.getTotalSessions() + 1);
+
+
+                if (wasPresent) {
+                    e.setAttendedSessions(e.getAttendedSessions() + 1);
+                }
+
+                System.out.println("Attendance recorded.");
+                System.out.printf("Current Attendance: %.1f%%\n", e.getAttendancePercentage());
+
+                if (!e.isEligibleForFinals()) {
+                    System.out.println("Warning: Student is currently below the 60% threshold!");
+                }
+                return;
+            }
+        }
+        System.out.println("Enrolment record not found.");
+    }
+
     public static Grade getGradeFromScore(int score) {
         if (score >= 90) return Grade.A_PLUS;
         if (score >= 85) return Grade.A;
@@ -124,32 +146,24 @@ public class EnrolmentService {
 
 
     public void addExamResult(int sID, int cID, String name, double marks, double max) {
-        for (Enrolment e : enrolments) {
-            if (e.getStudent().getStudentID() == sID && e.getCourse().getCourseID() == cID) {
+        Enrolment e = findEnrolment(sID, cID);
 
+        if (e == null) return;
 
-
-                double currentTotal = 0;
-                for (Exam exam : e.getExamList()) {
-                    currentTotal += exam.getMarksObtained();
-                }
-
-
-                if (currentTotal + marks > 100) {
-                    System.out.println("Error: Cannot add " + marks + " marks.");
-                    System.out.println("Current total is " + currentTotal + ". This would exceed 100/100.");
-                    return; // Stop the method here
-                }
-
-                // 3. If safe, add the exam and update
-                e.getExamList().add(new Exam(name, marks, max));
-                e.updateFinalGrade(); // Calls the method we wrote earlier
-
-                System.out.println("Marks added. Total progress: " + e.getNumericScore() + "/100");
-                return;
-            }
-
+        double currentTotalMax = 0;
+        for (Exam exam : e.getExamList()) {
+            currentTotalMax += exam.getMaxPossible();
         }
+
+        if (currentTotalMax + max > 100) {
+            System.out.println("❌ ERROR: Total weightage would exceed 100/100.");
+            return;
+        }
+
+        e.getExamList().add(new Exam(name, marks, max));
+        e.updateFinalGrade();
+
+        System.out.println("Marks added successfully for " + name + ".");
     }
     public double calculateStudentGPA(int studentID) {
         double totalWeightedPoints = 0;
@@ -166,7 +180,7 @@ public class EnrolmentService {
             }
         }
 
-        if (totalCredits == 0) return 0.0; // Avoid division by zero
+        if (totalCredits == 0) return 0.0;
         return totalWeightedPoints / totalCredits;
     }
 
@@ -195,41 +209,61 @@ public class EnrolmentService {
         for (Enrolment e : enrolments) {
             if (e.getStudent().getStudentID() == studentID) {
                 System.out.println("\nCOURSE: " + e.getCourse().getCourseName() + " [" + e.getCourse().getCourseCode() + "]");
-                System.out.println("----------------------------------------------------");
-
-                System.out.printf("%-15s | %-10s | %-10s\n", "Assessment", "Obtained", "Max Marks");
+                System.out.println("--------------------------------------------------");
+                System.out.printf("%-20s | %-10s | %-10s\n", "Assessment", "Obtained", "Max Marks");
                 System.out.println("--------------------------------------------------");
 
                 if (e.getExamList().isEmpty()) {
                     System.out.println("  No exam records found for this course.");
                 } else {
                     for (Exam exam : e.getExamList()) {
-                        System.out.printf("  %-15s | %-10.1f | %-10.1f\n",
+                        System.out.printf("%-20s | %-10.1f | %-10.1f\n",
                                 exam.getExamName(),
-                                exam.getMaxPossible(),
-                                exam.getMarksObtained(
-                                ));
+                                exam.getMarksObtained(),
+                                exam.getMaxPossible());
                     }
                 }
 
                 System.out.println("--------------------------------------------------");
-                System.out.printf("%-15s : %-10d / 100\n", "TOTAL MARKS", e.getNumericScore());
+                System.out.printf("%-20s : %d / 100\n", "TOTAL MARKS", e.getNumericScore());
+
+                String status = e.getAttendanceStatus();
+                double attPercent = e.getAttendancePercentage();
+                boolean isBarred = status.equals("INELIGIBLE");
+                boolean sessionsStarted = e.getTotalSessions() > 0;
+
                 if (e.getTotalMaxMarks() < 100) {
-                    System.out.printf("  %-15s : %-10s (INCOMPLETE - %d%% marked)\n",
-                            "STATUS", "IN-PROGRESS", (int)e.getTotalMaxMarks());
-                    System.out.printf("  %-15s : %-10s\n", "CURRENT GRADE", e.getGrade());
+                    System.out.printf("%-20s : %s (Incomplete: %d%% marked)\n", "STATUS", "IN-PROGRESS", (int)e.getTotalMaxMarks());
+                    System.out.printf("%-20s : %s\n", "CURRENT GRADE", isBarred ? "F (BARRED)" : e.getGrade());
                 } else {
-                    System.out.printf("  %-15s : %-10s (GPA: %.2f)\n",
-                            "FINAL GRADE", e.getGrade(), e.getGrade().getPoints());
+                    if (isBarred) {
+                        System.out.printf("%-20s : %s (GPA: %.2f)\n", "FINAL GRADE", "F (INELIGIBLE)", 0.00);
+                    } else {
+                        System.out.printf("%-20s : %s (GPA: %.2f)\n", "FINAL GRADE", e.getGrade(), e.getGrade().getPoints());
+                    }
                 }
-                System.out.println("----------------------------------------------------");
+
+                if (!sessionsStarted) {
+                    System.out.printf("%-20s : %s\n", "ATTENDANCE", "N/A (No sessions logged)");
+                } else {
+                    System.out.printf("%-20s : %.1f%%\n", "ATTENDANCE", attPercent);
+                }
+
+                System.out.printf("%-20s : %s\n", "ELIGIBILITY", status);
+
+                if (status.contains("PROBATION")) {
+                    System.out.println("Please submit G1 form to the Department Office.");
+                } else if (isBarred) {
+                    System.out.println("Barred from sitting in Final Examination.");
+                }
+                System.out.println("--------------------------------------------------");
             }
         }
 
         double finalGPA = calculateStudentGPA(studentID);
         System.out.println("\n====================================================");
         System.out.printf("OVERALL CUMULATIVE GPA (CGPA): %.2f\n", finalGPA);
-        System.out.println("\n====================================================");
+        System.out.println("====================================================");
     }
     public Enrolment findEnrolment(int studentID, int courseID){
 

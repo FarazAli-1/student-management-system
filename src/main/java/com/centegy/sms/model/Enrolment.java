@@ -8,8 +8,6 @@ import java.util.List;
 
 public class Enrolment {
 
-    private final List<Attendance> attendanceList = new ArrayList<>();
-
     public List<Exam> getExamList() {
         return examList;
     }
@@ -70,13 +68,31 @@ public class Enrolment {
         this.numericScore = numericScore;
     }
 
+    public int getAttendedSessions() {
+        return attendedSessions;
+    }
+
+    public void setAttendedSessions(int attendedSessions) {
+        this.attendedSessions = attendedSessions;
+    }
+
+    public int getTotalSessions() {
+        return totalSessions;
+    }
+
+    public void setTotalSessions(int totalSessions) {
+        this.totalSessions = totalSessions;
+    }
+
     private final int enrolmentID;
     private LocalDate enrolmentStartDate;
     private LocalDate endDate;
     private Grade grade;
     private int numericScore;
-    private Course course;
-    private Student student;
+    private int totalSessions = 0;
+    private int attendedSessions = 0;
+    private final Course course;
+    private final Student student;
 
 
 
@@ -90,15 +106,11 @@ public class Enrolment {
         double total = 0;
 
         for (Exam e : examList) {
-            // FIX: Use += to just add the marks obtained.
-            // Do NOT multiply by MaxPossible.
             total += e.getMarksObtained();
         }
 
-        // This converts your double (e.g. 60.0) to the int score (60)
         this.numericScore = (int) Math.round(total);
 
-        // Updates the Letter Grade based on the new total
         this.grade = EnrolmentService.getGradeFromScore(this.numericScore);
     }
 
@@ -109,6 +121,32 @@ public class Enrolment {
         }
         return totalMax;
     }
+
+    public double getAttendancePercentage() {
+        if (totalSessions == 0) return 100.0; // Assume perfect until sessions start
+        return ((double) attendedSessions / totalSessions) * 100;
+    }
+
+    public boolean isEligibleForFinals() {
+        return getAttendancePercentage() >= 60.0;
+    }
+
+    public String getAttendanceStatus() {
+        if (totalSessions == 0) {
+            return "NO DATA (Classes haven't started)";
+        }
+
+        double percentage = getAttendancePercentage();
+
+        if (percentage >= 70.0) {
+            return "ELIGIBLE";
+        } else if (percentage >= 60.0) {
+            return "PROBATION";
+        } else {
+            return "INELIGIBLE";
+        }
+    }
+
 
     @Override
     public String toString() {

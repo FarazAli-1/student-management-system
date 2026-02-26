@@ -1,10 +1,7 @@
 package com.centegy.sms;
 
 import com.centegy.sms.model.*;
-import com.centegy.sms.service.CourseService;
-import com.centegy.sms.service.EnrolmentService;
-import com.centegy.sms.service.InstructorService;
-import com.centegy.sms.service.StudentService;
+import com.centegy.sms.service.*;
 import com.centegy.sms.utils.ValidationUtils;
 
 
@@ -37,7 +34,8 @@ public class MenuHandler {
             while (examRunning) {
                 System.out.println("\n--------------Examination & Academic Records--------------");
                 System.out.println("1 - Enter/Update Exam Marks");
-                System.out.println("2 - View Student Transcript (GPA)");
+                System.out.println("2 - Mark Attendance");
+                System.out.println("3 - View Student Transcript (GPA)");
                 System.out.println("0 - Back to Main Menu");
                 System.out.print("Enter your Choice: ");
                 int examChoice = sc.nextInt();
@@ -51,29 +49,61 @@ public class MenuHandler {
                         int cID = sc.nextInt();
                         sc.nextLine();
 
-                        if (!enrolmentService.isStudentEnrolled(sID, cID)) {
+                        Enrolment e = enrolmentService.findEnrolment(sID, cID);
+
+                        if (e == null) {
                             System.out.println("Error: Student is not enrolled in this course.");
                         } else {
-                            System.out.print("Enter Assessment Name (e.g., Midterm, Quiz 1, Final): ");
+                            System.out.print("Enter Assessment Name (Midterm, Quiz 1, Final): ");
                             String examName = sc.nextLine();
+
+                            if (examName.equalsIgnoreCase("Final") || examName.equalsIgnoreCase("Finals")  ) {
+                                if (e.getTotalSessions() == 0) {
+                                    System.out.println("Access Denied: No attendance sessions logged yet. Cannot enter Final marks.");
+                                    break;
+                                }
+                                if (!e.isEligibleForFinals()) {
+                                    System.out.println("Access Denied: Student is INELIGIBLE for Final Exam (Attendance: " + String.format("%.1f", e.getAttendancePercentage()) + "%).");
+                                    break;
+                                }
+                            }
 
                             System.out.print("Enter Marks Obtained: ");
                             double marks = sc.nextDouble();
 
-                            System.out.print("Enter Maximum Marks for this " + examName + ": ");
+                            System.out.print("Enter Maximum Marks: ");
                             double max = sc.nextDouble();
-                            sc.nextLine();
 
                             if (marks < 0 || marks > max) {
-                                System.out.println("Error: Marks cannot be negative or exceed the maximum (" + max + ").");
+                                System.out.println("Error: Invalid marks range.");
                             } else {
                                 enrolmentService.addExamResult(sID, cID, examName, marks, max);
                             }
                         }
                         break;
-
                     }
                     case 2: {
+                        System.out.println("\n--- Mark Attendance ---");
+                        System.out.print("Enter Student ID: ");
+                        int sID = sc.nextInt();
+                        System.out.print("Enter Course ID: ");
+                        int cID = sc.nextInt();
+
+                        Enrolment enrolment = enrolmentService.findEnrolment(sID, cID);
+
+                        if (enrolment == null) {
+                            System.out.println("Error: Student is not enrolled in this course. Attendance cannot be marked.");
+                            break;
+                        }
+
+                        System.out.print("Was the student present? (1 for Yes, 0 for No): ");
+                        int choice = sc.nextInt();
+                        boolean present = (choice == 1);
+
+                        enrolmentService.markAttendance(sID, cID, present);
+                        break;
+                    }
+                    case 3: {
                         System.out.print("Enter Student ID for Transcript: ");
                         int sID = sc.nextInt();
                         sc.nextLine();

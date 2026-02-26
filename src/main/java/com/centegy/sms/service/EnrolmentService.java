@@ -107,7 +107,7 @@ public class EnrolmentService {
         return false;
     }
 
-    public Grade getGradeFromScore(int score) {
+    public static Grade getGradeFromScore(int score) {
         if (score >= 90) return Grade.A_PLUS;
         if (score >= 85) return Grade.A;
         if (score >= 80) return Grade.A_MINUS;
@@ -122,33 +122,51 @@ public class EnrolmentService {
         return Grade.FAILS;
     }
 
-    public void assignMarks(int studentID, int courseID, int score) {
+
+    public void addExamResult(int sID, int cID, String name, double marks, double max) {
         for (Enrolment e : enrolments) {
-            if (e.getStudent().getStudentID() == studentID && e.getCourse().getCourseID() == courseID) {
-                e.setNumericScore(score);
-                Grade calculatedGrade = getGradeFromScore(score);
-                e.setGrade(calculatedGrade);
-                System.out.println("Marks Assigned: " + score);
-                System.out.println("Grade: " + calculatedGrade + " (GPA: " + calculatedGrade.getPoints() + ")");
+            if (e.getStudent().getStudentID() == sID && e.getCourse().getCourseID() == cID) {
+
+
+
+                double currentTotal = 0;
+                for (Exam exam : e.getExamList()) {
+                    currentTotal += exam.getMarksObtained();
+                }
+
+
+                if (currentTotal + marks > 100) {
+                    System.out.println("Error: Cannot add " + marks + " marks.");
+                    System.out.println("Current total is " + currentTotal + ". This would exceed 100/100.");
+                    return; // Stop the method here
+                }
+
+                // 3. If safe, add the exam and update
+                e.getExamList().add(new Exam(name, marks, max));
+                e.updateFinalGrade(); // Calls the method we wrote earlier
+
+                System.out.println("Marks added. Total progress: " + e.getNumericScore() + "/100");
                 return;
             }
-        }
-        System.out.println("No enrollment found for this Student in this Course.");
-    }
 
+        }
+    }
     public double calculateStudentGPA(int studentID) {
         double totalWeightedPoints = 0;
         int totalCredits = 0;
 
         for (Enrolment e : enrolments) {
-            if (e.getStudent().getStudentID() == studentID && e.getGrade() != Grade.N_A) {
+            if (e.getStudent().getStudentID() == studentID &&
+                    e.getGrade() != Grade.N_A &&
+                    e.getTotalMaxMarks() >= 100) {
+
                 int credits = parseCredits(e.getCourse().getCredits());
                 totalWeightedPoints += (e.getGrade().getPoints() * credits);
                 totalCredits += credits;
             }
         }
 
-        if (totalCredits == 0) return 0.0;
+        if (totalCredits == 0) return 0.0; // Avoid division by zero
         return totalWeightedPoints / totalCredits;
     }
 
@@ -168,28 +186,51 @@ public class EnrolmentService {
             return;
         }
 
-        System.out.println("\n------------------------------------------------");
+        System.out.println("\n====================================================");
         System.out.println("              ACADEMIC TRANSCRIPT");
-        System.out.println("Student: " + s.getFirstName() + " " + s.getLastName());
-        System.out.println("----------------------------------------------------");
-        System.out.printf("%-30s | %-7s | %-5s\n", "Course", "Grade", "Marks");
-        System.out.println("----------------------------------------------------");
+        System.out.println("Student: " + s.getFirstName().toUpperCase() + " " + s.getLastName().toUpperCase());
+        System.out.println("Student ID: " + s.getStudentID());
+        System.out.println("====================================================");
 
         for (Enrolment e : enrolments) {
             if (e.getStudent().getStudentID() == studentID) {
-                System.out.printf("%-30s | %-7s | %-5.1f\n",
-                        e.getCourse().getCourseName(),
-                        e.getGrade(),
-                        e.getGrade().getPoints());
+                System.out.println("\nCOURSE: " + e.getCourse().getCourseName() + " [" + e.getCourse().getCourseCode() + "]");
+                System.out.println("----------------------------------------------------");
+
+                System.out.printf("%-15s | %-10s | %-10s\n", "Assessment", "Obtained", "Max Marks");
+                System.out.println("--------------------------------------------------");
+
+                if (e.getExamList().isEmpty()) {
+                    System.out.println("  No exam records found for this course.");
+                } else {
+                    for (Exam exam : e.getExamList()) {
+                        System.out.printf("  %-15s | %-10.1f | %-10.1f\n",
+                                exam.getExamName(),
+                                exam.getMaxPossible(),
+                                exam.getMarksObtained(
+                                ));
+                    }
+                }
+
+                System.out.println("--------------------------------------------------");
+                System.out.printf("%-15s : %-10d / 100\n", "TOTAL MARKS", e.getNumericScore());
+                if (e.getTotalMaxMarks() < 100) {
+                    System.out.printf("  %-15s : %-10s (INCOMPLETE - %d%% marked)\n",
+                            "STATUS", "IN-PROGRESS", (int)e.getTotalMaxMarks());
+                    System.out.printf("  %-15s : %-10s\n", "CURRENT GRADE", e.getGrade());
+                } else {
+                    System.out.printf("  %-15s : %-10s (GPA: %.2f)\n",
+                            "FINAL GRADE", e.getGrade(), e.getGrade().getPoints());
+                }
+                System.out.println("----------------------------------------------------");
             }
         }
 
         double finalGPA = calculateStudentGPA(studentID);
-        System.out.println("\n----------------------------------------");
-        System.out.printf("FINAL CGPA: %.2f\n", finalGPA);
-        System.out.println("----------------------------------------\n");
+        System.out.println("\n====================================================");
+        System.out.printf("OVERALL CUMULATIVE GPA (CGPA): %.2f\n", finalGPA);
+        System.out.println("\n====================================================");
     }
-
     public Enrolment findEnrolment(int studentID, int courseID){
 
         for (Enrolment e : enrolments){

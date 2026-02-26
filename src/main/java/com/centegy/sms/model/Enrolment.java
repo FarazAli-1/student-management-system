@@ -1,8 +1,20 @@
 package com.centegy.sms.model;
 
+import com.centegy.sms.service.EnrolmentService;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Enrolment {
+
+    private final List<Attendance> attendanceList = new ArrayList<>();
+
+    public List<Exam> getExamList() {
+        return examList;
+    }
+
+    private final List<Exam> examList = new ArrayList<>();
 
     public Enrolment(int enrolmentID, Student student, Course course) {
         this.enrolmentID = enrolmentID;
@@ -65,6 +77,38 @@ public class Enrolment {
     private int numericScore;
     private Course course;
     private Student student;
+
+
+
+    public void updateFinalGrade() {
+        if (examList.isEmpty()) {
+            this.numericScore = 0;
+            this.grade = Grade.N_A;
+            return;
+        }
+
+        double total = 0;
+
+        for (Exam e : examList) {
+            // FIX: Use += to just add the marks obtained.
+            // Do NOT multiply by MaxPossible.
+            total += e.getMarksObtained();
+        }
+
+        // This converts your double (e.g. 60.0) to the int score (60)
+        this.numericScore = (int) Math.round(total);
+
+        // Updates the Letter Grade based on the new total
+        this.grade = EnrolmentService.getGradeFromScore(this.numericScore);
+    }
+
+    public double getTotalMaxMarks() {
+        double totalMax = 0;
+        for (Exam e : examList) {
+            totalMax += e.getMaxPossible();
+        }
+        return totalMax;
+    }
 
     @Override
     public String toString() {

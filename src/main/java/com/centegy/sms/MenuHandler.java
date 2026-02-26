@@ -49,20 +49,29 @@ public class MenuHandler {
                         int sID = sc.nextInt();
                         System.out.print("Enter Course ID: ");
                         int cID = sc.nextInt();
+                        sc.nextLine();
+
                         if (!enrolmentService.isStudentEnrolled(sID, cID)) {
-                            System.out.println("Error: Student ID " + sID + " is not enrolled in Course ID " + cID);
+                            System.out.println("Error: Student is not enrolled in this course.");
                         } else {
-                            System.out.print("Enter Numeric Score (0-100): ");
-                            int score = sc.nextInt();
+                            System.out.print("Enter Assessment Name (e.g., Midterm, Quiz 1, Final): ");
+                            String examName = sc.nextLine();
+
+                            System.out.print("Enter Marks Obtained: ");
+                            double marks = sc.nextDouble();
+
+                            System.out.print("Enter Maximum Marks for this " + examName + ": ");
+                            double max = sc.nextDouble();
                             sc.nextLine();
 
-                            if (score < 0 || score > 100){
-                                System.out.println("Error: Score must be between 0 and 100.");
+                            if (marks < 0 || marks > max) {
+                                System.out.println("Error: Marks cannot be negative or exceed the maximum (" + max + ").");
                             } else {
-                                enrolmentService.assignMarks(sID, cID, score);
+                                enrolmentService.addExamResult(sID, cID, examName, marks, max);
                             }
                         }
                         break;
+
                     }
                     case 2: {
                         System.out.print("Enter Student ID for Transcript: ");

@@ -1,93 +1,318 @@
-# SMS_Faraz Ali
+# Student Management System
 
+A menu-driven Java console application for managing students, instructors, courses, enrolments, attendance, and academic results.
 
+Developed as an internship project to practise object-oriented programming, Java collections, input validation, and business-rule implementation.
 
-## Getting started
+## Features
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Student Management
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Add, update, remove, and list students.
+- Find students by ID.
+- Search by first name, last name, or full name.
+- Display students alphabetically by first and last name.
+- Validate email addresses and Pakistani mobile numbers through the console.
+- Prevent duplicate email addresses when adding students.
+- Remove associated enrolments when deleting a student, following confirmation.
 
-## Add your files
+### Instructor Management
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+- Add, update, remove, and list instructors.
+- Find instructors by ID or search by name.
+- Display instructors alphabetically.
+- Validate contact details through the console.
+- Prevent duplicate email addresses when adding instructors.
 
+### Course Management
+
+- Create courses with a name, unique course code, credits, and capacity.
+- Find courses by ID or course code.
+- Update course names, assigned instructors, and credits.
+- Assign instructors when creating a course or afterward.
+- Display remaining seats.
+- Prevent course deletion while students are enrolled.
+
+### Enrolment Management
+
+- Enrol students in courses and remove enrolments.
+- Prevent duplicate student-course enrolments.
+- Enforce course capacity during enrolment.
+- Find an individual enrolment.
+- Display all enrolments.
+- View course rosters and a student's enrolled-course list.
+
+### Attendance and Academic Records
+
+- Record attendance separately for each student-course enrolment.
+- Calculate attendance percentages.
+- Display eligibility, probation, and ineligibility statuses.
+- Add assessment results with obtained and maximum marks.
+- Prevent total assessment maximum marks from exceeding 100 per enrolment.
+- Calculate letter grades and credit-weighted GPA.
+- Display transcripts with assessments, grades, attendance, and eligibility.
+
+### Dashboard
+
+Display totals for:
+
+- Students
+- Instructors
+- Courses
+- Active enrolments
+
+## Technology Stack
+
+| Technology | Purpose |
+| --- | --- |
+| Java 25 | Application language and configured compiler target |
+| Maven | Project build |
+| Java Collections | In-memory record storage |
+| Java Regex | Email and phone validation |
+| Java Time API | Enrolment dates |
+| Scanner | Interactive console input |
+
+The project declares no third-party dependencies.
+
+## Project Organization
+
+Source files are located under `src/main/java/com/centegy/sms/`.
+
+| Component | Responsibility |
+| --- | --- |
+| `Main.java` | Administrator password check and main application loop |
+| `MenuHandler.java` | Console menus, input handling, dashboard, and demo data |
+| `model/Student.java` | Student information |
+| `model/Instructor.java` | Instructor information |
+| `model/Course.java` | Course details, instructor reference, and capacity |
+| `model/Enrolment.java` | Student-course relationship, attendance, and assessment results |
+| `model/Exam.java` | Individual assessment results |
+| `model/Grade.java` | Grade values and GPA points |
+| `service/StudentService.java` | Student operations |
+| `service/InstructorService.java` | Instructor operations |
+| `service/CourseService.java` | Course operations |
+| `service/EnrolmentService.java` | Enrolment, attendance, grading, and transcript operations |
+| `utils/ValidationUtils.java` | Contact-format validation |
+
+`CourseInstructor.java` is retained in the model package but is not used by the current implementation. Courses reference instructors directly.
+
+## Getting Started
+
+### Prerequisites
+
+- JDK 25
+- Maven
+- A terminal or Java IDE such as IntelliJ IDEA
+
+The current `pom.xml` sets both the compiler source and target versions to `25`.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/FarazAli-1/student-management-system.git
+cd student-management-system
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/interns-at-centegy2/sms_faraz-ali.git
-git branch -M main
-git push -uf origin main
+
+### 2. Verify Your Java Installation
+
+```bash
+java -version
+javac -version
+mvn -version
 ```
 
-## Integrate with your tools
+Ensure Maven is using JDK 25.
 
-* [Set up project integrations](https://gitlab.com/interns-at-centegy2/sms_faraz-ali/-/settings/integrations)
+### 3. Compile
 
-## Collaborate with your team
+Run from the repository root:
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+```bash
+mvn clean compile
+```
 
-## Test and Deploy
+### 4. Start the Application
 
-Use the built-in continuous integration in GitLab.
+```bash
+java -cp target/classes com.centegy.sms.Main
+```
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Running in IntelliJ IDEA
 
-***
+1. Open the repository as a Maven project.
+2. Select JDK 25 as the project SDK.
+3. Open `src/main/java/com/centegy/sms/Main.java`.
+4. Run the `main` method.
 
-# Editing this README
+## Administrator Access
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+The application prompts:
 
-## Suggestions for a good README
+```text
+Enter Admin Password:
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The current demonstration password is:
 
-## Name
-Choose a self-explaining name for your project.
+```text
+admin123
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+This is a hardcoded console access check. The application does not implement separate user accounts or role-based authentication.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## Main Menu
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```text
+1 - Student Management Menu
+2 - Course Management Menu
+3 - Instructor Management Menu
+4 - Enrolment Management Menu
+5 - Examination & Academic Records
+6 - Display System Dashboard
+0 - Exit
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Choose a number and follow the prompts. Submenus use `0` to return to the main menu.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## Included Demo Data
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+After successful administrator access, the application initializes:
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+| Record Type | Initial Count |
+| --- | ---: |
+| Students | 12 |
+| Instructors | 6 |
+| Courses | 8 |
+| Enrolments | 15 |
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+The sample courses include Object Oriented Programming, Data Structures, Database Systems, Operating Systems, and Artificial Intelligence.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+All records are stored in memory. Changes are lost when the application exits, and the demo data is recreated on the next launch.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Example Workflow
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+The included data already enrols student `1` in course `1`.
 
-## License
-For open source projects, say how it is licensed.
+To explore attendance, assessment results, and transcripts:
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+1. Start the application and enter the administrator password.
+2. Select `5` for **Examination & Academic Records**.
+3. Select `2` to mark attendance.
+4. Enter student ID `1`, course ID `1`, and `1` for present.
+5. Select `1` to add an assessment:
+   - Name: `Midterm`
+   - Obtained marks: `35`
+   - Maximum marks: `40`
+6. Add another assessment:
+   - Name: `Final`
+   - Obtained marks: `50`
+   - Maximum marks: `60`
+7. Select `3` to view the transcript for student `1`.
+
+These assessments total `85/100`, corresponding to grade `A` and `4.0` grade points.
+
+Other courses without a complete 100-mark assessment allocation are excluded from the GPA calculation.
+
+## Attendance Rules
+
+Attendance is tracked per enrolment.
+
+| Recorded Attendance | Displayed Status |
+| --- | --- |
+| No sessions recorded | NO DATA |
+| 70% or higher | ELIGIBLE |
+| 60% to below 70% | PROBATION |
+| Below 60% | INELIGIBLE |
+
+The console blocks assessment entry named `Final` or `Finals` when:
+
+- No attendance sessions have been recorded.
+- Attendance is below 60%.
+
+The current final-entry check permits students in the probation range.
+
+## Grading and GPA
+
+Assessment marks are added together, and the total is rounded to an integer before assigning a grade.
+
+| Total Marks | Grade | Grade Points |
+| --- | --- | ---: |
+| 90–100 | A_PLUS | 4.0 |
+| 85–89 | A | 4.0 |
+| 80–84 | A_MINUS | 3.8 |
+| 75–79 | B_PLUS | 3.4 |
+| 71–74 | B | 3.0 |
+| 68–70 | B_MINUS | 2.8 |
+| 64–67 | C_PLUS | 2.4 |
+| 61–63 | C | 2.0 |
+| 57–60 | C_MINUS | 1.8 |
+| 53–56 | D_PLUS | 1.4 |
+| 45–52 | D | 1.0 |
+| Below 45 | FAILS | 0.0 |
+
+GPA is calculated as:
+
+```text
+Sum of (course grade points × course credits)
+────────────────────────────────────────────
+             Total included credits
+```
+
+Credit values such as `3+1` are interpreted as four credits.
+
+Only enrolments with assessment maximum marks totalling 100 and a grade other than `N_A` contribute to GPA.
+
+## Validation and Business Rules
+
+- Contact validation is applied through the interactive student and instructor menus.
+- Pakistani mobile formats include `03001234567`, `923001234567`, and `+923001234567`.
+- Duplicate email checks apply when creating students and instructors.
+- Course codes are checked for duplicates during creation.
+- A student cannot enrol in the same course twice.
+- Enrolment is refused when no seats remain.
+- Courses with enrolments cannot be deleted.
+- Student deletion removes the student's associated enrolments.
+- The console rejects obtained marks below zero or above the assessment maximum.
+
+## Testing
+
+The repository currently has no automated test suite or test dependencies.
+
+The example workflow provides a manual way to check the application. Additional manual checks include:
+
+- Adding a duplicate email or course code.
+- Attempting a duplicate enrolment.
+- Filling a small-capacity course.
+- Deleting a course that still has enrolled students.
+- Entering final marks before attendance has been recorded.
+- Adding assessments whose maximum marks would exceed 100.
+
+## Current Limitations
+
+- Records are stored in memory; file and database persistence are not implemented.
+- Some invalid numeric inputs or missing student IDs can terminate the application.
+- Email uniqueness is not rechecked during updates.
+- Removing an instructor does not clear references from existing courses.
+- Assessment entry appends results rather than updating an existing assessment by name.
+- Transcript output can display an attendance-based failing status while GPA still uses the stored mark-based grade.
+- The administrator password is hardcoded for demonstration.
+
+## Possible Improvements
+
+- Add file or database persistence.
+- Introduce automated tests for enrolment, grading, and attendance.
+- Improve input and exception handling.
+- Make assessment results editable.
+- Apply validation consistently across menus and services.
+- Align attendance-based transcript outcomes with GPA calculation.
+
+## Project Documentation
+
+Additional project material is available in [SMS_Faraz_Ali.pdf](SMS_Faraz_Ali.pdf).
+
+## Author
+
+**Faraz Ali**
+
+- [GitHub](https://github.com/FarazAli-1)
+- [LinkedIn](https://www.linkedin.com/in/farazali-swe)
